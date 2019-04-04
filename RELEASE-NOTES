@@ -1,0 +1,41 @@
+#
+# Copyright 2018 Infosys Ltd.
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+This is not an official release notes document.  It exists for developers
+to jot down their notes while working in the source code.
+
+###########################################################
+# 1.1.0
+###########################################################
+
+Existing features
+--------------------------------
+- Listing the currently available features
+     Create large volumes of data within a couple of clicks.
+     Generate meaningful test data at row level.
+     Extremely fast data generation (Generates more than 10 Million records in less than 3 minutes).
+     Improve operational efficiency.
+     Generates the real time data (statistical distributions) as well as constant data.
+     Facility to group the column values into factors/segments using column bucketing functionality.
+     Generate user defined data using the regex pattern.
+     Generate huge log files within seconds.
+     Facility to download the file directly to your system.
+     Reuse the configuration after saving the dataset.
+     Sftp/ftp transfer facility for the files.
+

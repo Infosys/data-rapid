@@ -1,0 +1,93 @@
+<!--
+* Copyright 2018 Infosys Ltd.
+*
+* Licensed to the Apache Software Foundation (ASF) under one or more
+* contributor license agreements.  See the NOTICE file distributed with
+* this work for additional information regarding copyright ownership.
+* The ASF licenses this file to You under the Apache License, Version 2.0
+* (the "License"); you may not use this file except in compliance with
+* the License.  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+-->
+<div class="usersPage">
+	<div>
+		<div class="panel panel-default panel-wizard col-lg-25">
+			<div id="usersListSection">
+				<div>
+					<div class="panel-heading" style="float: left;">
+						<h3 class="subTitleUserRole">Existing Users</h3>
+					</div>
+					<div>
+						<!-- <br></br> -->
+						<button type="button" id="createUserBtn" class="btn"
+							style="display: inline; margin-top: 15px;">Create User</button>
+						&nbsp; &nbsp;
+					</div>
+				</div>
+				<div class="panel-body">
+
+					<!-- <br></br> -->
+					<table class="table table-striped table-hover" id="userListTable">
+						<thead>
+							<tr>
+								<th>User Name</th>
+								<th>Description</th>
+								<th>Created Date</th>
+								<th>Created By</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div id="usersDialog">
+				<div class="row">
+					<label for="inputUserName" class="col-sm-3 form-control-label">User
+						Name</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="inputUserName"
+							placeholder="User Name">
+					</div>
+				</div>
+				<div class="row">
+					<label for="inputUserDesc" class="col-sm-3 form-control-label">
+						Description</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="inputUserDesc"
+							placeholder="Description">
+					</div>
+				</div>
+				<div class="row">
+					<label for="inputCreDate" class="col-sm-3 form-control-label">Created
+						Date</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="inputCreDate" disabled>
+					</div>
+				</div>
+				<div class="row">
+					<label for="inputCreBy" class="col-sm-3 form-control-label">Created
+						By</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="inputCreBy" disabled>
+					</div>
+				</div>
+				<div class="row">
+					<label for="inputPassword" class="col-sm-3 form-control-label">Password</label>
+					<div class="col-sm-8">
+						<input type="password" class="form-control" id="inputPassword">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,399 @@
+<!--
+* Copyright 2018 Infosys Ltd.
+*
+* Licensed to the Apache Software Foundation (ASF) under one or more
+* contributor license agreements.  See the NOTICE file distributed with
+* this work for additional information regarding copyright ownership.
+* The ASF licenses this file to You under the Apache License, Version 2.0
+* (the "License"); you may not use this file except in compliance with
+* the License.  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+-->
+<div class="tab-content">
+	<form action="" method="post" id="createForm">
+
+		<div id="workspace" class="tab-pane fade in active">
+			<br />
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+				<br />
+					<div class="input-group inputName">
+
+						<input type="text" name="jobName" id="jobName"
+							class="form-control" placeholder="Your data set name here..."
+							aria-describedby="basic-addon2" required>
+						<!-- <span class="input-group-addon" id="basic-addon2">Save</span> -->
+					</div>
+					<div class="rowFileType">
+						<b>Rows &nbsp; </b><input type="number"
+							style='height: 33px; width: 120px;' name="numRows" id="numRows"
+							required />&nbsp;<span id="errmsg"></span>&nbsp;&nbsp;&nbsp; <b>File
+							Type &nbsp;</b><select class="selectFileType"
+							style='height: 33px; width: 70px;' name="fileType" id="fileType">
+							<option value="csv">CSV</option>
+						</select>
+					</div>
+
+					<br> <br> <br>
+					<h5>
+						<b> Builder Wizard </b>
+					</h5>
+
+					<div class="row clearfix">
+						<div class="col-md-12 column">
+							<!-- <table class="table table-bordered table-striped" id="tabCell"> -->
+							<table class="table table-bordered" id="tabCell">
+								<thead>
+									<tr>
+										<th width="5%">Order</th>
+										<th>Header</th>
+										<!--
+												<th>Type</th>
+												<th>Value Type</th>
+												-->
+										<th width="20%">Data Type</th>
+										<th>Values</th>
+										<th width="5%">Advanced</th>
+										<th width="5%"><button type="button" id="add_row"
+												onclick="addRow()" class="btn btn-sm btn-success">
+												<i class="glyphicon glyphicon-plus"></i>Add Row
+											</button></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr id="addr0" class="trow">
+										<th scope="row" id='order' class="order" name="dataSetOrder">1</th>
+										<td><input type="text" name="columnName0"
+											id="columnName0" onChange="updateSourceHeader(0)"
+											placeholder='Column Name'
+											class='colTitle form-control input-md'></td>
+										<!--
+												<td><select style='height: 33px; width: 80px;' name="type" id="type" class="type" onChange="getDataType(0,0);"> <option value="CNST">General</option> <option value="R">R</option> </select></td>
+												<td><select style='height: 33px; width: 110px;'name="valueType" id="valueType" class="valueType" onChange="getDataType(0,0);"> <option value="DEFAULT">Default</option> <option value="SET">Set</option> <option value="EXPRESSION">Expression</option> </select></td>
+												-->
+										<!--<td><select name="dataType" id="dataType" class="dataType" onChange="getDataType(0,0);"> <option value="alphanumeric">Alpha Numeric</option> <option value="americancard">American Card</option> <option value="city">City</option> <option value="country">Country</option> <option value="cvv">CVV</option> <option value="date">Date</option> <option value="defaultset">Default Set</option> <option value="digitformat">Digit format</option> <option value="DiscoveryCreditCard">Discovery Credit Card</option> <option value="emailaddress">Email Address</option> <option value="firstname">First Name</option> <option value="floatrange">Float Range</option> <option value="guid">Guid</option> <option value="hexadecimalcode">Hexa Decimal Code</option> <option value="hexcolors">Hex Colors</option> <option value='IncrementalUniqueValues'>Incremental Unique Values</option> <option value="integerrange">Integer Range</option> <option value="imei">IMEI Number</option> <option value="ipaddress">IP Address</option> <option value="lastname">Last Name</option> <option value="location">Location</option> <option value="macaddress">MAC Address</option> <option value="mastercardnumber">Mastercard Number</option> <option value="numberformat">Number Format</option> <option value="password">Password</option> <option value="phonenumber">Phone Number</option> <option value="phonenumberwithext">Phone Number WithExt</option> <option value="rcommand">RCommand</option> <option value="ssn">SSN</option> <option value="state">State</option> <option value="timestamp">Timestamp</option> <option value="uniquevalues">Unique Values</option> <option value="userdefinedregex">User Defined Regex Pattern</option> <option value="visacreditcardnumber">VisaCreditCard Number</option> <option value="zipcode">ZipCode</option> </select></td>-->
+										<td><select name="dataType0" id="dataType0"
+											class="dataType" onChange="getDataType(0,0);">
+												<option value="alphanumeric">Alpha Numeric</option>
+												<option value="americancard">American Card</option>
+												<option value="city">City</option>
+												<option value="country">Country</option>
+												<option value="cvv">CVV</option>
+												<option value="date">Date</option>
+												<option value="defaultset">Default Set</option>
+												<option value="digitformat">Digit format</option>
+												<option value="DiscoveryCreditCard">Discovery
+													Credit Card</option>
+												<option value="emailaddress">Email Address</option>
+												<option value="firstname">First Name</option>
+												<option value="floatrange">Float Range</option>
+												<option value="guid">Guid</option>
+												<option value="hexadecimalcode">Hexa Decimal Code</option>
+												<option value="hexcolors">Hex Colors</option>
+												<option value='IncrementalUniqueValues'>Incremental
+													Unique Values</option>
+												<option value="integerrange">Integer Range</option>
+												<option value="imei">IMEI Number</option>
+												<option value="ipaddress">IP Address</option>
+												<option value="lastname">Last Name</option>
+												<option value="location">Location</option>
+												<option value="macaddress">MAC Address</option>
+												<option value="mastercardnumber">Mastercard Number</option>
+												<option value="numberformat">Number Format</option>
+												<option value="password">Password</option>
+												<option value="phonenumber">Phone Number</option>
+												<option value="phonenumberwithext">Phone Number
+													WithExt</option>
+												<option value="rcommand">RCommand</option>
+												<option value="ssn">SSN</option>
+												<option value="state">State</option>
+												<option value="timestamp">Timestamp</option>
+												<option value="uniquevalues">Unique Values</option>
+												<option value="userdefinedregex">User Defined Regex
+													Pattern</option>
+												<option value="visacreditcardnumber">VisaCreditCard
+													Number</option>
+												<option value="zipcode">ZipCode</option>
+										</select></td>
+										<td><input type="text" name="datavalues0"
+											id="datavalues0" placeholder='Enter Values'
+											class="datavalues form-control input-md"
+											onchange="getDataTypeFromValue(0,0)"></td>
+										<td><span id="addrAdvBtn0" data-toggle="modal"
+											data-target="#addr0myModalNorm"
+											class="glyphicon glyphicon-new-window popupBtn"
+											aria-hidden="true"></span> <!--<span class="glyphicon glyphicon-pushpin bucketingIcon" show="bucketing"></span>-->
+										</td>
+
+										<td><button type="button" onclick="deleteRow(0)"
+												class="btn btn-sm btn-danger">
+												<i class="glyphicon glyphicon-remove-circle"></i>
+											</button>&nbsp;
+											<button type="button" onclick="addRow()"
+												class="btn btn-sm btn-success">
+												<i class="glyphicon glyphicon-plus"></i>
+											</button></td>
+									</tr>
+
+									<tr id="addr1"></tr>
+									</br>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="createBtn">
+					<div class="processButton">
+						<!-- <button type="submit" class="btn btn-sm btn-success generateBtn" onClick="generateDataSet();"> -->
+						<button type="submit" class="btn btn-sm btn-success generateBtn"
+							id="generateBtnId">
+							<i class="glyphicon glyphicon-file"></i> Generate
+						</button>
+						<button type="button" class="btn btn-sm btn-success generateBtn"
+							id="saveDataSet">
+							<i class="glyphicon glyphicon-floppy-disk"></i> Save
+						</button>
+						<button type="button" class="btn btn-sm btn-success generateBtn"
+							disabled>
+							<i class="glyphicon glyphicon-calendar"></i> Schedule
+						</button>
+						<button type="button" class="btn btn-sm btn-success generateBtn"
+							id="downloadJSON">
+							<i class="glyphicon glyphicon-save"></i> Download
+						</button>
+						<td><span data-toggle="modal"
+							data-target="#filetransferModalNorm"
+							class="btn btn-sm btn-success generateBtn" aria-hidden="true"><i
+								class="glyphicon glyphicon-upload"></i> Transfer File</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</form>
+
+	<div id="allmodal">
+		<div class="modal fade" id="addr0myModalNorm" tabindex="-1"
+			role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+						</button>
+						<h5 class="modal-title" id="myModalLabel">
+							<b>Segment - Column Mapper</b>
+						</h5>
+					</div>
+					<div class="modal-body">
+						<table>
+							<div class="firstDiv">
+								<div class="srcClnm">
+									<td><label>Select Source Column &nbsp;&nbsp;&nbsp;</label></td>
+									<td><input type="text" id="srcClnm0"
+										onchange="updateHeader(0)"
+										class="form-control sourceClnHdrInp"
+										placeholder="Source Column Header"></td>
+								</div>
+								<div class="destClnHdr">
+									<td><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											Destination Column Header &nbsp;&nbsp;&nbsp;</label></td>
+									<td><input type="text" id="destClnHdr0"
+										class="form-control destClnHdrInp"
+										placeholder="Destination Column Header" /></td>
+								</div>
+							</div>
+						</table>
+						<div class="tableDiv">
+							<table class="table table-bordered table-striped"
+								id="advancedtabCell0">
+								<thead>
+									<br />
+									<tr>
+										<th><label>Values From Set</label></th>
+										<!--
+														   <th> <label>Type</label> 	   </th>
+														   <th> <label>Value Type</label> </th>
+														   -->
+										<th><label>Data Type</label></th>
+										<th width="5%"><label>Rows(Percentage)</label><input
+											type="hidden" id="noOfRows0" value="100"></th>
+										<th><label>Values</label></th>
+										<th><button type="button" id="popupadd_row0"
+												class="btn btn-sm btn-success" onClick="popUpAddRow(0)">
+												<i class="glyphicon glyphicon-plus"></i>Add Row
+											</button></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr id="popupadd_row0_advancedaddr0" class="trow">
+										<!--<td><input type="text" name="columnName" id="columnName" placeholder="Column Name" class="columnName form-control input-md"></td>-->
+										<td><select style="height: 33px; width: 130px;"
+											name="columnName_parent0_child0"
+											id="columnName_parent0_child0"><select></td>
+										<!--
+															<td><select style="height: 33px; width: 80px;" name="type" id="type" class="type"> <option value="CNST">General</option> <option value="R">R</option> </select></td>
+															<td><select style="height: 33px; width: 100px;" name="valueType" id="valueType" class="valueType"> <option value="DEFAULT">Default</option> <option value="SET">Set</option> <option value="EXPRESSION">Expression</option> </select></td>
+															-->
+										<td><select name="dataType_parent0_child0"
+											id="dataType_parent0_child0" class="dataType"
+											onChange="changetextboxpopup(0,0);">
+												<option value="alphanumeric">Alpha Numeric</option>
+												<option value="americancard">American Card</option>
+												<option value="city">City</option>
+												<option value="country">Country</option>
+												<option value="cvv">CVV</option>
+												<option value="date">Date</option>
+												<option value="defaultset">Default Set</option>
+												<option value="digitformat">Digit format</option>
+												<option value="DiscoveryCreditCard">Discovery
+													Credit Card</option>
+												<option value="emailaddress">Email Address</option>
+												<option value="firstname">First Name</option>
+												<option value="floatrange">Float Range</option>
+												<option value="guid">Guid</option>
+												<option value="hexadecimalcode">Hexa Decimal Code</option>
+												<option value="hexcolors">Hex Colors</option>
+												<option value='IncrementalUniqueValues'>Incremental
+													Unique Values</option>
+												<option value="integerrange">Integer Range</option>
+												<option value="imei">IMEI Number</option>
+												<option value="ipaddress">IP Address</option>
+												<option value="lastname">Last Name</option>
+												<option value="location">Location</option>
+												<option value="macaddress">MAC Address</option>
+												<option value="mastercardnumber">Mastercard Number</option>
+												<option value="numberformat">Number Format</option>
+												<option value="password">Password</option>
+												<option value="phonenumber">Phone Number</option>
+												<option value="phonenumberwithext">Phone Number
+													WithExt</option>
+												<option value="rcommand">RCommand</option>
+												<option value="ssn">SSN</option>
+												<option value="state">State</option>
+												<option value="timestamp">Timestamp</option>
+												<option value="uniquevalues">Unique Values</option>
+												<option value="userdefinedregex">User Defined Regex
+													Pattern</option>
+												<option value="visacreditcardnumber">VisaCreditCard
+													Number</option>
+												<option value="zipcode">ZipCode</option>
+										</select></td>
+										<td><input type="text" class="form-control noOfRows"
+											placeholder="No of Rows" id="noOfRows_parent0_child0"
+											onfocus="updateNoOfRows(0,0,'in')"
+											onblur="updateNoOfRows(0,0,'out')" />(<span
+											id="noOfRowsRemaining_parent0_child0">100</span>% Remaining)</td>
+										<td><input type="text" name="datavalues_parent0_child0"
+											id="datavalues_parent0_child0" placeholder="Enter Values"
+											class="datavalues form-control input-md"></td>
+										<td><button type="button" onclick="popUpDeleteRow(0,0)"
+												class="btn btn-sm btn-danger">
+												<i class="glyphicon glyphicon-remove-circle"></i>
+											</button>&nbsp;
+											<button type="button" onclick="popUpAddRow(0)"
+												class="btn btn-sm btn-success">
+												<i class="glyphicon glyphicon-plus"></i>
+											</button></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="filetransferModalNorm" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+					</button>
+					<h5 class="modal-title" id="myModalLabel">
+						<b>File Transfer Wizard</b>
+					</h5>
+				</div>
+				<div class="modal-body">
+
+					<div class="tableDivFileTransfer">
+						<table class="table table-bordered table-striped"
+							id="filetransfercell">
+							<thead>
+								<br />
+
+							</thead>
+							<br />
+							<tbody>
+								<tr>
+									<div class="host">
+										<td><label> Host Name</label></td>
+										<td><input type="text" id="hostClmHdr"
+											class="form-control hostClmHdrInp" placeholder="Host Name" /></td>
+									</div>
+									<div class="remotedirectory">
+										<td><label> Remote Directory</label></td>
+										<td><input type="text" id="remotedirectoryClmHdr"
+											class="form-control remotedirectoryClmHdrInp"
+											placeholder="Remote Directory" /></td>
+									</div>
+								</tr>
+								<tr>
+									<div class="userid">
+										<td><label> User ID</label></td>
+										<td><input type="text" id="useridClmHdr"
+											class="form-control fileNameClmHdrInp" placeholder="User ID" /></td>
+									</div>
+									<div class="password">
+										<td><label> Password</label></td>
+										<td><input type="password" id="passwordClmHdr"
+											class="form-control passwordClmHdrInp" placeholder="Password" /></td>
+									</div>
+								</tr>
+								<tr>
+								</tr>
+								<div class="fileTransferType">
+									<td><label>Transfer Type</label></td>
+									<td><select style='height: 33px; width: 170px;'
+										name="fileTransferClm" id="fileTransferClm"
+										class="fileTransferClm">
+											<option value="sftp">Secure File Transfer</option>
+											<option value="ftp">Normal File Transfer</option>
+									</select></td>
+								</div>
+								<div class="fileTransferMode">
+									<td><label>Transfer Mode</label></td>
+									<td><input type="text" id="fileTransferModeClmHdr"
+										class="form-control fileTransferModeClmHdrInp" value="Upload"
+										disabled /></td>
+								</div>
+							</tbody>
+							<br />
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-success generateBtn"
+						id="filetransfer" onClick="filetransfer">
+						<i class="glyphicon glyphicon-transfer"></i> Transfer
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

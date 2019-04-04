@@ -1,0 +1,153 @@
+<!--
+* Copyright 2018 Infosys Ltd.
+*
+* Licensed to the Apache Software Foundation (ASF) under one or more
+* contributor license agreements.  See the NOTICE file distributed with
+* this work for additional information regarding copyright ownership.
+* The ASF licenses this file to You under the Apache License, Version 2.0
+* (the "License"); you may not use this file except in compliance with
+* the License.  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+-->
+
+<div class="rolesPage">
+	<div class="col-md-13">
+		<div class="panel panel-default panel-wizard col-lg-25">
+			<div id="rolesListSection">
+				<div>
+					<div class="panel-heading" style="float: left;">
+						<h3 class="subTitleUserRole"> Existing User Access Mapping</h3>
+					</div>
+					<div>
+						<button type="button" id="createRoleBtn" class="btn" style="display:inline;">Create
+							Access</button>
+						&nbsp;
+						<!-- <i class="glyphicon glyphicon-plus"></i> -->
+					</div>
+				</div>
+				<div class="panel-body">
+					<!-- <br></br> -->
+					<table class="table table-striped table-hover" id="roleListTable">
+						<thead>
+							<tr>
+								<th>User Name</th>
+								<th>Role </th>
+								<th>Description</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="rolesDialog">
+				<div class="row">
+					</br> <label for="userName" class="col-sm-3 form-control-label">User
+						Name</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="userName"
+							placeholder="User Name">
+					</div>
+				</div>
+				<div class="row">
+					<label for="roleName" class="col-sm-3 form-control-label">Role
+						Name</label>
+					<div class="col-sm-8">
+						<select class="form-control" id="roleName">
+							<option value="ROLE_ADMIN">Admin</option>
+							<option value="ROLE_NORMAL_USER">Normal User</option>
+							<option value="ROLE_GROUP_USER">Group User</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<label for="roleDesc" class="col-sm-3 form-control-label">
+						Description</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="roleDesc"
+							placeholder="Description">
+					</div>
+				</div>
+				<div class="row">
+					<label for="roleType" class="col-sm-3 form-control-label">Role
+						Type</label>
+					<div class="col-sm-8">
+						<select class="form-control" id="roleType">
+							<option value="individual">Individual</option>
+							<option value="group">Group</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<label for="groupUsers" class="col-sm-3 form-control-label">Group
+						Users</label>
+					<div class="col-sm-8">
+						<select multiple class="form-control" id="groupUsers">
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<label for="usageType" class="col-sm-3 form-control-label">Usage
+						Type</label>
+					<div class="col-sm-8">
+						<select class="form-control" id="usageType">
+							<option value="UNLIMITED">Unlimited</option>
+							<option value="PERIOD_BASED">Period Based</option>
+							<option value="DAYS_BASED">Days Based</option>
+							<option value="RECORD_COUNT_BASED">Record Count Based</option>
+							<option value="SIZE_BASED">Size Based</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<label for="startDate" class="col-sm-3 form-control-label">Start
+						Date</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="startDate"
+							placeholder="Start Date">
+					</div>
+				</div>
+				<div class="row">
+					<label for="endDate" class="col-sm-3 form-control-label">End
+						Date</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="endDate"
+							placeholder="End Date">
+					</div>
+				</div>
+				<div class="row">
+					<label for="recordCountLimit" class="col-sm-3 form-control-label">Record
+						Count Limit</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="recordCountLimit"
+							placeholder="Record Count Limit">
+					</div>
+				</div>
+				<div class="row">
+					<label for="usageLimit" class="col-sm-3 form-control-label">Usage
+						Limit</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="usageLimit"
+							placeholder="Usage Limit">
+					</div>
+				</div>
+				<div class="row">
+					<label for="daysLimit" class="col-sm-3 form-control-label">Days
+						Limit</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="daysLimit"
+							placeholder="Days Limit">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
