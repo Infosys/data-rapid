@@ -1,10 +1,12 @@
 ## Data Rapid
 
 Data Rapid is a data generation tool integrated with R  for creating real frequency distribution data as well as constant data.Its a web based test data generation tool which uses regex pattern and predefined static content to generate the realistic data independent of any domain. Data Rapid eliminates the need of coding to generate the data. Data Rapid adds the capabilities of constant data generation and distribution data generation. With rapidly changing dynamics in market place, extracting insights really fast to support real-time business processes have become a must-have competitive advantage. Data Rapid enables enterprises to build meaningful constant and real data there by building the correlations across diverse data sets.
+    
+<img src="https://raw.githubusercontent.com/Infosys/data-rapid/master/landing.PNG">     
 
 **Generate realistic huge data-sets within seconds**
 
-Why Data Rapid? – We all have been working on different POC&#39;s (Proof of concept) and for every scenario we require huge data sets. In many cases we do not get the data from the customer and then we have to generate the data ourselves. In such a case it becomes difficult to create data manually. In such situations the data rapid comes in handy which enables us to generate huge datasets in a very short span of time.
+Why Data Rapid? â€“ We all have been working on different POC&#39;s (Proof of concept) and for every scenario we require huge data sets. In many cases we do not get the data from the customer and then we have to generate the data ourselves. In such a case it becomes difficult to create data manually. In such situations the data rapid comes in handy which enables us to generate huge datasets in a very short span of time.
 
  
 **Data Rapid Builder Details**
