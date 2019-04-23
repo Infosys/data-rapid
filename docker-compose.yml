@@ -4,15 +4,15 @@ services:
     build: .
     ports: 
      - "8080:8080"
+    depends_on:
+        database:
+         condition: service_healthy
   database:
     build: ./datarapid-docs
     restart: always
     environment:
-      MYSQL_DATABASE: 'datagen'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'datagenadmin'
-      MYSQL_ROOT_PASSWORD: 'rootpass'
+      MYSQL_ROOT_PASSWORD: 'root'
     ports: 
       - "3306:3306"
     expose:
-      - '3306'
+      - "3306"
