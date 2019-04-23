@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  application: 
+    build: .
+    ports: 
+     - "8080:8080"
+  database:
+    build: ./datarapid-docs
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'datagen'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'datagenadmin'
+      MYSQL_ROOT_PASSWORD: 'rootpass'
+    ports: 
+      - "3306:3306"
+    expose:
+      - '3306'
