@@ -1,12 +1,14 @@
-version: '3.3'
+version: '2'
 services:
   application: 
     build: .
+    restart: always
     ports: 
      - "8080:8080"
     depends_on:
-        database:
-         condition: service_healthy
+     - "database"
+    command: ["./wait-for-it.sh", "database:3306","-t","100", "--", "catalina.sh", "run"]
+       
   database:
     build: ./datarapid-docs
     restart: always
@@ -14,5 +16,3 @@ services:
       MYSQL_ROOT_PASSWORD: 'root'
     ports: 
       - "3306:3306"
-    expose:
-      - "3306"
