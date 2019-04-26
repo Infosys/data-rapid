@@ -1,0 +1,18 @@
+version: '2'
+services:
+  application: 
+    build: .
+    restart: always
+    ports: 
+     - "8080:8080"
+    depends_on:
+     - "database"
+    command: ["./wait-for-it.sh", "database:3306","-t","100", "--", "catalina.sh", "run"]
+       
+  database:
+    build: ./datarapid-docs
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports: 
+      - "3306:3306"
