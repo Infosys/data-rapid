@@ -112,3 +112,6 @@ Following are the sample data generation configurations.
 | 4 | sc-bytes | Integer Range | 1 to 255   | Will generate the numbers from 1 to 255 randomly |
 | 5 | cs-method | Default Set |  GET,POST | Will generate method according to the values given |
 | 6 | Phone number | PhoneNumber |   | Will generate the phone numbers. |
+
+
+Complete Development Manual - https://github.com/Infosys/data-rapid/blob/master/datarapid-docs/usage/Data%20Rapid%20Manual.pdf
