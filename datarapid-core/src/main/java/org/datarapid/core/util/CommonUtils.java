@@ -116,10 +116,23 @@ public class CommonUtils implements Constants {
     public static long getFileSize(String fileName) {
         File file = new File(fileName);
         if (!file.exists() || !file.isFile()) {
-            logger.error("File doesn\'t exist");
+            logger.error("File is not available");
             return -1;
         }
         return file.length();
+    }
+
+    /**
+     * @Description :-This method is used to check the folder existance
+     */
+    public static long createFolderIfNotExists(String folderName) {
+        File files = new File(folderName);
+        if (!files.exists()) {
+            if (files.mkdirs()) {
+                logger.info("Directories created");
+            }
+        }
+        return 1;
     }
 
     /**

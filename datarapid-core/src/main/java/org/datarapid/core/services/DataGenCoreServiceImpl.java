@@ -156,7 +156,8 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
                         headersList.add(columnMeta.getColumnName());
                     }
                 }
-
+                CommonUtils commonUtils = new CommonUtils();
+                commonUtils.createFolderIfNotExists(tempDirectory);
                 fileName = tempDirectory + File.separator + configuration.getFileName() + "." + configuration.getFileType();
 
                 CSVFileWriter csvFileWriter = new CSVFileWriter(intRows, headersList, fileName);
@@ -165,7 +166,6 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
                 processingMessage = FILE_CREATION_MESSAGE + configuration.getFileName() + "." + configuration.getFileType();
 
 				/* Setting the activity log details */
-                CommonUtils commonUtils = new CommonUtils();
                 activityMeta.setTriggeredUserName(currentUser);
                 activityMeta.setActivityDate(commonUtils.getSysDate());
                 activityMeta.setGeneratedFileName(configuration.getFileName() + "." + configuration.getFileType());
