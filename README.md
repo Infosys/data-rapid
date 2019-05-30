@@ -113,5 +113,28 @@ Following are the sample data generation configurations.
 | 5 | cs-method | Default Set |  GET,POST | Will generate method according to the values given |
 | 6 | Phone number | PhoneNumber |   | Will generate the phone numbers. |
 
+**Complete Development Manual**
 
-Complete Development Manual - https://github.com/Infosys/data-rapid/blob/master/datarapid-docs/usage/Data%20Rapid%20Manual.pdf
+Complete Development Manual available- https://github.com/Infosys/data-rapid/blob/master/datarapid-docs/usage/Data%20Rapid%20Manual.pdf
+
+**Data rapid Installation and deployment**
+
+Following are the setup steps that needs to be followed for Data rapid Installation and deployment.
+
+Prerequisites used in the setup
+
+o   Mysql version 5.1.31
+o   R - Rserve 1.8.1 in Java (Some of the data types uses R . If the data types are not used, We can ignore R installation)
+o   Java 1.8
+o   Tomcat 8.5.2
+o   Maven
+ 
+Installation and deployment
+
+o   Download the latest code from Git repository.
+o   Change the datarapid\datarapid-api\src\main\resources\application.properties file with mysql data base and R server information
+o   Change the shiro file - datarapid\datarapid-api\src\main\webapp\WEB-INF\shiro.ini with mysql database credentials
+o   Build the code using Maven and get the war file for the deployment
+o   Run the sql scripts in Mysql - datarapid\datarapid-docs\scripts\schema.sql and then datarapid\datarapid-docs\scripts\data.sql
+o   Put the war(datarapid-1.0.war) in tomcat and start the tomcat for the datarapid access
+
