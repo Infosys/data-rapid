@@ -121,20 +121,20 @@ Complete Development Manual available- https://github.com/Infosys/data-rapid/blo
 
 Following are the setup steps that needs to be followed for Data rapid Installation and deployment.
 
-Prerequisites used in the setup
+**Prerequisites used in the setup**
 
-o   Mysql version 5.1.31
-o   R - Rserve 1.8.1 in Java (Some of the data types uses R . If the data types are not used, We can ignore R installation)
-o   Java 1.8
-o   Tomcat 8.5.2
-o   Maven
+    * Mysql version 5.1.31
+    * R Rserve 1.8.1 in Java (Some of the data types uses R . If the data types are not used, We can ignore R installation)
+    * Java 1.8
+    * Tomcat 8.5.2
+    * Maven 3.3.3
  
-Installation and deployment
+**Installation and deployment**
 
-o   Download the latest code from Git repository.
-o   Change the datarapid\datarapid-api\src\main\resources\application.properties file with mysql data base and R server information
-o   Change the shiro file - datarapid\datarapid-api\src\main\webapp\WEB-INF\shiro.ini with mysql database credentials
-o   Build the code using Maven and get the war file for the deployment
-o   Run the sql scripts in Mysql - datarapid\datarapid-docs\scripts\schema.sql and then datarapid\datarapid-docs\scripts\data.sql
-o   Put the war(datarapid-1.0.war) in tomcat and start the tomcat for the datarapid access
+    * Download the latest code from Git repository.
+    * Change the datarapid\datarapid-api\src\main\resources\application.properties file with mysql data base and R server information
+    * Change the shiro file - datarapid\datarapid-api\src\main\webapp\WEB-INF\shiro.ini with mysql database credentials
+    * Build the code using Maven and get the war file for the deployment
+    * Run the sql scripts in Mysql - datarapid\datarapid-docs\scripts\schema.sql and then datarapid\datarapid-docs\scripts\data.sql
+    * Put the war(datarapid-1.0.war) in tomcat and start the tomcat for the datarapid access
 
