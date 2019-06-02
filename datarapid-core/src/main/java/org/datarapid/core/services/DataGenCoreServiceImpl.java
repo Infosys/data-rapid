@@ -159,12 +159,9 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
                 CommonUtils commonUtils = new CommonUtils();
                 commonUtils.createFolderIfNotExists(tempDirectory);
                 fileName = tempDirectory + File.separator + configuration.getFileName() + "." + configuration.getFileType();
-
                 CSVFileWriter csvFileWriter = new CSVFileWriter(intRows, headersList, fileName);
                 csvFileWriter.writeFile(finalList);
-
                 processingMessage = FILE_CREATION_MESSAGE + configuration.getFileName() + "." + configuration.getFileType();
-
 				/* Setting the activity log details */
                 activityMeta.setTriggeredUserName(currentUser);
                 activityMeta.setActivityDate(commonUtils.getSysDate());
@@ -268,7 +265,7 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
+     * @param userName
      * @throws Exception
      * @Description :-This method is invoked by from the data-gen-api service
      * implementation class for querying an user.
@@ -283,7 +280,6 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
      * @throws Exception
      * @Description :-This method is invoked by from the data-gen-api service
      * implementation class for querying all user.
@@ -318,6 +314,7 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
             List<UserMeta> userMeta = new ArrayList<UserMeta>();
             for (int i = 0; i < info.size(); i++) {
                 UserMeta element = new UserMeta();
+                element.setUserId(info.get(i).getUserId());
                 element.setUserName(info.get(i).getUserName());
                 element.setUserDesc(info.get(i).getUserDesc());
                 element.setCreatedBy(info.get(i).getCreatedBy());
@@ -362,7 +359,7 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
+     * @param userName
      * @throws Exception
      * @Description :-This method is invoked by from the data-gen-api service
      * implementation class for querying an userrole.
@@ -380,7 +377,6 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
      * @throws Exception
      * @Description :-This method is invoked by from the data-gen-api service
      * implementation class for querying all userroles.
@@ -436,7 +432,7 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
 
 
     /**
-     * @param configuration
+     * @param activityMeta
      * @throws Exception
      * @Description :-The method to log the activity
      */
@@ -448,7 +444,7 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
+     * @param userName
      * @throws Exception
      * @Description :-The method to check the role is active
      */
@@ -460,7 +456,9 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
+     * @param userName
+     * @param password
+     * @param operation
      * @throws Exception
      * @Description :-The method to authenticate the user
      */
@@ -472,7 +470,6 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
      * @throws Exception
      * @Description :-The method to get the logged in user
      */
@@ -484,7 +481,6 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
      * @throws Exception
      * @Description :-The method for user logout
      */
@@ -508,7 +504,7 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     /**
-     * @param configuration
+     * @param datasetName
      * @throws Exception
      * @Description :-This method is invoked by from the data-gen-api service
      * implementation class for querying the dataset.
@@ -522,16 +518,11 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
         return jobConfiguration;
     }
 
-
     public JobConfiguration remapJobConfiguration(List<DataSetInformation> info) throws Exception {
 
         if (info.size() > 0) {
             for (int i = 0; i < info.size(); i++) {
                 try {
-                    //Blob dataSetBlob = info.get(i).getConfigurationDetails();
-                    //byte[] byteArray = dataSetBlob.getBytes(1, (int) (dataSetBlob.length()));
-                    //CommonUtils commonUtils = new CommonUtils();
-                    //JobConfiguration jobConfiguration = (JobConfiguration) commonUtils.deserialize(byteArray);
                     Gson gson = new Gson();
                     String configDetails = info.get(i).getConfigurationJson();
                     jobConfiguration = gson.fromJson(configDetails, JobConfiguration.class);
@@ -541,11 +532,9 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
             }
         }
         return jobConfiguration;
-
     }
 
     /**
-     * @param configuration
      * @throws Exception
      * @Description :-This method is invoked by from the data-gen-api service
      * implementation class for querying all datasets.
@@ -560,38 +549,17 @@ public class DataGenCoreServiceImpl implements DataGenCoreService, Messages {
     }
 
     public DataSetConfigurations remapDataSetConfiguration(List<DataSetInformation> info) throws Exception {
-						
-		/*if (info.size() > 0) {			
-			List<JobConfiguration> jobConfigurations = new ArrayList<JobConfiguration>();	
-			for (int i = 0; i < info.size(); i++) {										
-				JobConfiguration element = new JobConfiguration();											
-				Gson gson = new Gson();					
-				String configDetails= info.get(i).getConfigurationJson();
-				String fileName = info.get(i).getFileName();
-				String fileType = info.get(i).getFileType();
-				String userName = info.get(i).getUserName();
-				String createdTime = info.get(i).getCreatedTime();
-				element = gson.fromJson(configDetails, JobConfiguration.class);							
-				jobConfigurations.add(element);				
-			}
-			dataSetConfiguration.setJobConfiguration(jobConfigurations);				
-		}*/
-
 
         if (info.size() > 0) {
             List<DataSetConfiguration> dataSetConfigurationList = new ArrayList<DataSetConfiguration>();
             for (int i = 0; i < info.size(); i++) {
                 DataSetConfiguration element = new DataSetConfiguration();
                 Gson gson = new Gson();
-
-                String fileName = info.get(i).getFileName();
-                String fileType = info.get(i).getFileType();
-                String userName = info.get(i).getUserName();
-                String createdTime = info.get(i).getCreatedTime();
-                element.setCreatedTime(createdTime);
-                element.setFileName(fileName);
-                element.setFileType(fileType);
-                element.setUserName(userName);
+                element.setConfigId(info.get(i).getConfigId());
+                element.setCreatedTime(info.get(i).getCreatedTime());
+                element.setFileName(info.get(i).getFileName());
+                element.setFileType(info.get(i).getFileType());
+                element.setUserName(info.get(i).getUserName());
                 String configDetails = info.get(i).getConfigurationJson();
 
                 JobConfiguration jobConf = new JobConfiguration();

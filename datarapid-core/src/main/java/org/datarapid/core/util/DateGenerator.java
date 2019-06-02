@@ -31,19 +31,17 @@ import java.util.List;
 
 /**
  * @Description This class generates the random date between the StartDate and
- * the EndDate.The user will have to give the input in the
- * dd/mm/yyyy format only and then he can specify his own desired
+ * the EndDate.User can specify his own desired
  * output format using the # separator . The format is
- * "StartDate-EndDate#outputSimpleDateFormat" for ex:-
- * 01/01/1993-01/01/1994#mm/dd/yyyy
+ * "StartDate to EndDate#outputSimpleDateFormat" for ex:-
+ * 01/01/1993 to 01/01/1994#mm/dd/yyyy
  */
 public class DateGenerator implements Constants {
 
-    private static final SimpleDateFormat inputFormat = new SimpleDateFormat(STANDARD_INPUT_FORMAT);
     private static final Logger logger = LoggerFactory.getLogger(DateGenerator.class);
 
     /**
-     * @param input,noOfRows
+     * @param inputFromUser,noOfRows
      * @Description This method is called from the Date class.It receives the
      * number of rows and String input which contains information
      * of the startDate and the endDate followed by the hash
@@ -63,32 +61,24 @@ public class DateGenerator implements Constants {
         SimpleDateFormat outputFormat = new SimpleDateFormat(format);
 
         String date = separator[0].trim();
-        String[] dateBreaker = date.split("-");
+        String[] dateBreaker = date.split("to");
         List<String> list = new ArrayList<String>();
 
         if (dateBreaker.length == 2) {
             try {
-                Date from = inputFormat.parse(dateBreaker[0]);
-                Date to = inputFormat.parse(dateBreaker[1]);
-
+                Date from = outputFormat.parse(dateBreaker[0]);
+                Date to = outputFormat.parse(dateBreaker[1]);
                 long startDate = from.getTime();
                 long endDate = to.getTime();
-
                 long diff = endDate - startDate + 1;
-
                 for (int i = 0; i < noOfRows; i++) {
-
                     Timestamp rand = new Timestamp(startDate + (long) (Math.random() * diff));
                     list.add(outputFormat.format(rand.getTime()));
-
                 }
-
             } catch (ParseException e) {
                 logger.error("Error in Date Generator class " + e);
             }
         }
         return list;
-
     }
-
 }

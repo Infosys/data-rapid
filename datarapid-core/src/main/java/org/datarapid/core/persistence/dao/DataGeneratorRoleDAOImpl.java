@@ -22,6 +22,8 @@ package org.datarapid.core.persistence.dao;
 import org.datarapid.core.persistence.model.RoleInformation;
 import org.datarapid.core.util.CommonUtils;
 import org.hibernate.SQLQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -33,7 +35,7 @@ import java.util.List;
  */
 @Repository("dataGeneratorRoleDAO")
 public class DataGeneratorRoleDAOImpl extends AbstractDao implements DataGeneratorRoleDAO {
-
+    private static final Logger logger = LoggerFactory.getLogger(DataGeneratorRoleDAOImpl.class);
     @SuppressWarnings("unchecked")
     public <T> List<T> listRoles() {
 
@@ -72,36 +74,30 @@ public class DataGeneratorRoleDAOImpl extends AbstractDao implements DataGenerat
 
         boolean roleActiveStatus = false;
         String currentLoggedInUser = userName;
-        String sql = "SELECT user_name,active_status,IFNULL(processed_record_count,0) AS processed_record_count,IFNULL(processed_usage,0) AS processed_usage,group_users,record_count_limit,usage_limit,role_type FROM (SELECT CASE WHEN  (CURDATE() >= DATE(start_date) AND CURDATE() <= DATE(end_date) AND  ur.record_count_limit > al.processed_record_count AND ur.usage_limit > al.processed_usage) THEN 'Y' WHEN  (al.triggered_user_name IS NULL) THEN 'Y' ELSE 'N' END AS active_status,al.*,ur.* FROM user_roles ur LEFT JOIN (SELECT SUM(processed_record_count) processed_record_count,SUM(processed_usage) processed_usage ,triggered_user_name FROM activity_log GROUP BY triggered_user_name ) al ON (ur.user_name = al.triggered_user_name) ) details";
+        String sql = "SELECT user_name,active_status,IFNULL(processed_record_count,0) AS processed_record_count,IFNULL(processed_usage,0) AS processed_usage,group_users,record_count_limit,usage_limit,role_type " +
+                "FROM (SELECT CASE WHEN  (CURDATE() >= DATE(start_date) AND CURDATE() <= DATE(end_date) AND  ur.record_count_limit > al.processed_record_count AND ur.usage_limit > al.processed_usage) THEN 'Y' WHEN  (al.triggered_user_name IS NULL) THEN 'Y' ELSE 'N' END AS active_status,al.*,ur.* " +
+                "FROM user_roles ur LEFT JOIN (SELECT SUM(processed_record_count) processed_record_count,SUM(processed_usage) processed_usage ,triggered_user_name FROM activity_log GROUP BY triggered_user_name ) al ON (ur.user_name = al.triggered_user_name) ) details";
         SQLQuery query = getSession().createSQLQuery(sql);
         List<Object[]> roleDetails = query.list();
         if (roleDetails.size() > 0) {
             for (Object[] obj : roleDetails) {
                 String user = (String) obj[0];
                 if (user.equals(currentLoggedInUser)) {
-
                     String activeStatus = (String) obj[1];
                     String groupUsers = (String) obj[4];
                     String loggedInUserRoleType = (String) obj[7];
                     if (activeStatus.equals("Y")) {
-
                         CommonUtils commonUtils = new CommonUtils();
-
                         // Checking for child group user
                         if (loggedInUserRoleType.equalsIgnoreCase("group")) {
                             if (commonUtils.isNull(groupUsers)) {
-
                                 // Get the logged in group users parent id
-
                                 for (Object[] innerObj : roleDetails) {
-
                                     String parentUser = (String) innerObj[0];
                                     String innerGroupUsers = (String) innerObj[4];
                                     if (!commonUtils.isNull(innerGroupUsers)) {
                                         innerGroupUsers = innerGroupUsers + "," + parentUser;
                                         String[] splitter = innerGroupUsers.split(",");
-                                        System.out.println(splitter);
-
                                         BigDecimal totalProcessedRecordCount = new BigDecimal(0);
                                         BigDecimal totalProcessedUsage = new BigDecimal(0);
                                         BigDecimal individualRecordCountLimit = new BigDecimal(0);
@@ -113,8 +109,6 @@ public class DataGeneratorRoleDAOImpl extends AbstractDao implements DataGenerat
 
                                         for (int i = 0; i < splitter.length; i++) {
                                             String innerGroupuser = splitter[i];
-                                            System.out.println(innerGroupuser);
-
                                             for (Object[] innerRoleObj : roleDetails) {
 
                                                 String innerRoleUser = (String) innerRoleObj[0];
@@ -151,29 +145,16 @@ public class DataGeneratorRoleDAOImpl extends AbstractDao implements DataGenerat
 
                                         }
 
-                                        System.out.println("totalProcessedRecordCount = " + totalProcessedRecordCount);
-                                        System.out
-                                                .println("individualRecordCountLimit = " + individualRecordCountLimit);
-                                        System.out.println("totalProcessedUsage = " + totalProcessedUsage);
-                                        System.out.println("individualUsageLimit = " + individualUsageLimit);
-                                        System.out.println("groupRecordCountLimit = " + groupRecordCountLimit);
-                                        System.out.println("groupUsageLimit = " + groupUsageLimit);
-
-                                        System.out.println(
-                                                "individualProcessedRecordCount= " + individualProcessedRecordCount);
-                                        System.out.println("individualProcessedUsage = " + individualProcessedUsage);
-
                                         // Check for group users limit
                                         if (totalProcessedRecordCount.compareTo(groupRecordCountLimit) <= 0
                                                 && totalProcessedUsage.compareTo(groupUsageLimit) <= 0) {
-                                            System.out.println(
+                                            logger.info(
                                                     "Condition Satisfied for the user Group: Usage is within the allowed limit ");
-                                            // Check for individual user limit
-                                            // as well
+                                            // Check for individual user limit as well
                                             if (individualProcessedRecordCount
                                                     .compareTo(individualRecordCountLimit) <= 0
                                                     && individualProcessedUsage.compareTo(individualUsageLimit) <= 0) {
-                                                System.out.println(
+                                                logger.info(
                                                         "Condition Satisfied for the user Individual: Usage is within the allowed limit ");
                                                 roleActiveStatus = true;
                                             }
@@ -202,7 +183,6 @@ public class DataGeneratorRoleDAOImpl extends AbstractDao implements DataGenerat
 
                             for (int i = 0; i < splitter.length; i++) {
                                 String groupuser = splitter[i];
-                                System.out.println(groupuser);
                                 for (Object[] innerObj : roleDetails) {
 
                                     String innerUser = (String) innerObj[0];
@@ -221,15 +201,9 @@ public class DataGeneratorRoleDAOImpl extends AbstractDao implements DataGenerat
                                     }
                                 }
                             }
-
-                            System.out.println("totalProcessedRecordCount = " + totalProcessedRecordCount);
-                            System.out.println("recordCountLimit = " + recordCountLimit);
-                            System.out.println("totalProcessedUsage = " + totalProcessedUsage);
-                            System.out.println("usageLimit = " + usageLimit);
-
                             if (totalProcessedRecordCount.compareTo(recordCountLimit) <= 0
                                     && totalProcessedUsage.compareTo(usageLimit) <= 0) {
-                                System.out.println("Condition Satisfied  : Usage is within the allowed limit ");
+                                logger.info("Condition Satisfied  : Usage is within the allowed limit ");
                                 roleActiveStatus = true;
                             }
                         } else {

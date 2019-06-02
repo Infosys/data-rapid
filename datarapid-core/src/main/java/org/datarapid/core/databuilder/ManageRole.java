@@ -92,7 +92,10 @@ public class ManageRole {
         List<RoleMeta> roleMeta = roleInfo.getRoleMeta();
         RoleMeta element = roleMeta.get(0);
         roleInformation.setUserName(element.getUserName());
-
+        List<RoleInformation> info = infoService.getRole(element.getUserName());
+        if(info.size()>0) {
+            roleInformation.setUserAccessId(info.get(0).getUserAccessId());
+        }
         boolean roleDel = infoService.deleteRole(roleInformation);
 
         return roleDel;
@@ -108,6 +111,13 @@ public class ManageRole {
         RoleInfo roleInfo = configuration.getRoleInfo();
         List<RoleMeta> roleMeta = roleInfo.getRoleMeta();
         RoleMeta element = roleMeta.get(0);
+        List<RoleInformation> info = infoService.getRole(element.getUserName());
+        if(info.size()>0) {
+            roleInformation.setUserAccessId(info.get(0).getUserAccessId());
+        }
+        else{
+            roleInformation.setUserAccessId(0);
+        }
         roleInformation.setUserName(element.getUserName());
         roleInformation.setRoleName(element.getRoleName());
         roleInformation.setRoleDesc(element.getRoleDesc());

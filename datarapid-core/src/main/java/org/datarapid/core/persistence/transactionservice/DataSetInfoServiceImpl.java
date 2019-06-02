@@ -85,8 +85,15 @@ public class DataSetInfoServiceImpl implements DataSetInfoService {
 
         List<DataSetInformation> availableDataSet = dao.getDataSet(dataSetInformation.getFileName());
         if (availableDataSet.size() > 0) {
-            status = dao.updateDataSet(dataSetInformation);
+            availableDataSet.get(0).setConfigurationDetails(dataSetInformation.getConfigurationDetails());
+            availableDataSet.get(0).setConfigurationJson(dataSetInformation.getConfigurationJson());
+            availableDataSet.get(0).setCreatedTime(dataSetInformation.getCreatedTime());
+            availableDataSet.get(0).setFileName(dataSetInformation.getFileName());
+            availableDataSet.get(0).setFileType(dataSetInformation.getFileType());
+            availableDataSet.get(0).setUserName(dataSetInformation.getUserName());
+            status = dao.updateDataSet(availableDataSet.get(0));
         } else {
+            dataSetInformation.setConfigId(0);
             status = dao.addDataSet(dataSetInformation);
         }
         return status;

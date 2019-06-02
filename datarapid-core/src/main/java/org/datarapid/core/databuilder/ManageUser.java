@@ -95,9 +95,11 @@ public class ManageUser {
         List<UserMeta> userMeta = userInfo.getUserMeta();
         UserMeta element = userMeta.get(0);
         userInformation.setUserName(element.getUserName());
-
+        List<UserInformation> userDetails = infoService.getUser(element.getUserName());
+        if (userDetails.size()>0) {
+            userInformation.setUserId(userDetails.get(0).getUserId());
+        }
         boolean userdel = infoService.deleteUser(userInformation);
-
         return userdel;
     }
 
@@ -117,6 +119,12 @@ public class ManageUser {
         List<UserMeta> userMeta = userInfo.getUserMeta();
         UserMeta element = userMeta.get(0);
         userInformation.setUserName(element.getUserName());
+        List<UserInformation> userDetails = infoService.getUser(element.getUserName());
+        if (userDetails.size()>0) {
+            userInformation.setUserId(userDetails.get(0).getUserId());
+        }else{
+            userInformation.setUserId(0);
+        }
         String encPassword = securityUtility.getEncryptedPassword(element.getPassword());
         userInformation.setCreatedBy(element.getCreatedBy());
         userInformation.setCreatedTime(element.getCreatedTime());

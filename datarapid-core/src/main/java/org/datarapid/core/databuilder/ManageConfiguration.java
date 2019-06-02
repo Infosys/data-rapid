@@ -23,9 +23,11 @@ import com.google.gson.Gson;
 import org.datarapid.core.common.SpringContext;
 import org.datarapid.core.persistence.model.DataSetInformation;
 import org.datarapid.core.persistence.transactionservice.DataSetInfoService;
+import org.datarapid.core.persistence.transactionservice.RoleInfoService;
 import org.datarapid.core.security.SecurityUtility;
 import org.datarapid.core.util.CommonUtils;
 import org.datarapid.core.view.JobConfiguration;
+import org.datarapid.core.view.RoleConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,11 +106,9 @@ public class ManageConfiguration {
     public boolean deleteDataSet(JobConfiguration configuration) {
 
         DataSetInfoService infoService = SpringContext.getBean("dataSetInfoService");
-
+        List<DataSetInformation> info = infoService.getDataSet(configuration.getFileName());
         dataSetInformation.setFileName(configuration.getFileName());
-
-        boolean dataSetDel = infoService.deleteDataSet(dataSetInformation);
-
+        boolean dataSetDel = infoService.deleteDataSet(info.get(0));
         return dataSetDel;
 
     }
@@ -163,10 +163,8 @@ public class ManageConfiguration {
         CommonUtils commonUtils = new CommonUtils();
         byte[] byteArray = null;
         Blob dataSetBlob = null;
-
         SecurityUtility securityUtility = SecurityUtility.getInstance();
         dataSetInformation.setUserName(securityUtility.getCurrentUser());
-
         dataSetInformation.setFileName(configuration.getFileName());
         dataSetInformation.setCreatedTime(dateFormat.format(date));
         dataSetInformation.setFileType(configuration.getFileType());

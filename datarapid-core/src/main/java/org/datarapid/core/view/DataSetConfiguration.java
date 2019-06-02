@@ -24,11 +24,20 @@ package org.datarapid.core.view;
  */
 public class DataSetConfiguration {
 
+    private int configId;
     private String fileName;
     private String fileType;
     private String userName;
     private String createdTime;
     private JobConfiguration jobConfiguration;
+
+    public int getConfigId() {
+        return configId;
+    }
+
+    public void setConfigId(int configId) {
+        this.configId = configId;
+    }
 
     /**
      * @return the fileName
@@ -99,23 +108,5 @@ public class DataSetConfiguration {
     public void setJobConfiguration(JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
     }
-
-
-    //private List<JobConfiguration> jobConfiguration;
-
-    /**
-     * @return the jobConfiguration
-     */
-    /*public List<JobConfiguration> getJobConfiguration() {
-		return jobConfiguration;
-	}*/
-
-    /**
-     * @param jobConfiguration the jobConfiguration to set
-     */
-	/*public void setJobConfiguration(List<JobConfiguration> jobConfiguration) {
-		this.jobConfiguration = jobConfiguration;
-	}*/
-
 
 }

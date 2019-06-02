@@ -6,7 +6,7 @@ Data Rapid is a data generation tool integrated with R  for creating real freque
 
 **Generate realistic huge data-sets within seconds**
 
-Why Data Rapid? â€“ We all have been working on different POC&#39;s (Proof of concept) and for every scenario we require huge data sets. In many cases we do not get the data from the customer and then we have to generate the data ourselves. In such a case it becomes difficult to create data manually. In such situations the data rapid comes in handy which enables us to generate huge datasets in a very short span of time.
+Why Data Rapid? – We all have been working on different POC&#39;s (Proof of concept) and for every scenario we require huge data sets. In many cases we do not get the data from the customer and then we have to generate the data ourselves. In such a case it becomes difficult to create data manually. In such situations the data rapid comes in handy which enables us to generate huge datasets in a very short span of time.
 
  
 **Infosys Data Rapid Features**
@@ -48,7 +48,7 @@ The following are the data builder type configuration details.
 | 3 | City  | Generate City automatically | No values allowed |
 | 4 | Country  | Generate Country automatically | No values allowed |
 | 5 | CVV  | Generate CVV numbers automatically | No values allowed |
-| 6 | Date  | Generate random dates between start date and the end date based on the parameters in values field. Usage : Select drop down Date and set the values field in the format start date in dd/MM/yyyy-end date in dd/MM/yyyy#output date format | Eg : 01/01/2014-01/01/2016#dd/MMM/yyyy  will generate dates between 01/01/2014 and 01/01/2016 in dd/MMM/yyyy format |
+| 6 | Date  | Generate random dates between start date and the end date based on the parameters in values field. Usage : Select drop down Date and set the values field in the format start date to end date #output date format | Eg : 01/01/2014 to 01/01/2016#dd/MMM/yyyy  will generate dates between 01/01/2014 and 01/01/2016 in dd/MMM/yyyy format |
 | 7 | Default Set  | Generate user defined values from the set provided in the values field separated by comma. Usage : Select drop down Default Set and set the values field in the format attributes separated by comma | Eg: Machine1,Machine2,Machine3  Will generate values from any of the Machine1 or Machine2 or Machine3 |
 | 8 | Digit format  | Generate random digits based on the parameters in values field.  Usage : Select drop down Digit Format and set the values field in the format n digit number | Eg: 5  Will generate numbers like 45689 |
 | 9 | Discovery Credit Card  | Generate DiscoveryCreditCard numbers automatically | No values allowed |
@@ -73,7 +73,7 @@ The following are the data builder type configuration details.
 | 29 | RCommand  | Can be used to provide the distribution R command. Execute the rcommand specified. The value of n should be equal to the total number of rows.R Enabled distribution data generated will reverse the seed generation with respect to the expected frequency distribution like rnorm(4, mean=50, sd=10), floor(runif(100, min=0, max=101)) etc.  | Eg: rnorm(n=1000,mean=100,sd=5.2) Will generate distribution values with mean 100 and standard deviation 5.2 |
 | 30 | SSN  | Generate ssn automatically | No values allowed |
 | 31 | State  | Generate state automatically | No values allowed |
-| 32 | Timestamp  | Generate the timestamp.Enter the fromDate-ToDate to generate standard Timestamp. | Eg: 01/01/2014-01/01/2016 Will generate timestamp values between 01/01/2014 and 01/01/2016 |
+| 32 | Timestamp  | Generate random timestamps between start date and the end date based on the parameters in values field. | Eg: 01/01/2014 to 01/01/2016#dd/MM/yyyy will generate timestamp values between 01/01/2014 and 01/01/2016 |
 | 33 | Unique Values  | Generate uniquevalues. Specify the start value and end value to generate the unique key. | Eg : 1 to 1000 Will generate unique values between 1 and 1000 |
 | 34 | User DefinedRegex Pattern  | Generate user defined regex pattern. |  Eg : [0-9]{2} Will generate a number with the regex pattern |
 | 35 | VisaCreditCard Number  | Generate visacreditcardnumber automatically | No values allowed |
@@ -88,7 +88,7 @@ Following are the sample data generation configurations.
 | **Sr No.** | **Column Header** | **Data Type** | **Values** | **Comments** |
 | --- | --- | --- | --- | --- |
 | 1 | DateId | Unique Values |  1 to 1000 | Will generate the unique values from 1 till 1000 |
-| 2 | Date | Date |  01/01/2014-01/01/2016#dd/MMM/yyyy | Will generate the dates between 1st Jan 2014 to 1st Jan 2016 and will generate the output in the user defined output format  |
+| 2 | Date | Date |  01/01/2014 to 01/01/2016#dd/MMM/yyyy | Will generate the dates between 1st Jan 2014 to 1st Jan 2016 and will generate the output in the user defined output format  |
 | 3 | CustomerId | Unique Values |  1 to 1000 | Will generate the unique values from 1 till 1000 |
 | 4 | Customer Name | First Names |   | Automatically Populated |
 | 5 | Customer Location | Location |   | Automatically Populated |
@@ -106,8 +106,8 @@ Following are the sample data generation configurations.
 
 | **Sr No.** | **Column Header** | **Data Type** | **Values** | **Comments** |
 | --- | --- | --- | --- | --- |
-| 1 | Date | Date | 01/01/2014-01/01/2016#dd/MMM/yyyy | Will generate the dates between 1st Jan 2014 to 31 Dec 2014 |
-| 2 | Time | Date | 01/01/2014-01/01/2016#HH:mm:ss | Will generate the time |
+| 1 | Date | Date | 01/01/2014 to 01/01/2016#dd/MMM/yyyy | Will generate the dates between 1st Jan 2014 to 31 Dec 2014 |
+| 2 | Time | Date | 01/01/2014 to 01/01/2016#HH:mm:ss | Will generate the time |
 | 3 | cs-ip | IpAddress |   | Will generate the ip addresses |
 | 4 | sc-bytes | Integer Range | 1 to 255   | Will generate the numbers from 1 to 255 randomly |
 | 5 | cs-method | Default Set |  GET,POST | Will generate method according to the values given |

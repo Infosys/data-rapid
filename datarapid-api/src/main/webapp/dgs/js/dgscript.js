@@ -29,29 +29,24 @@ var userList;
 var loggedInUserId;
 
 function removeElementFromArray(index) {
-	//console.log("removeElementFromArray");
 	if (index > -1) {
 		row_container_array.splice(index, 1);
 	}
 }
 
 function getParentIds() {
-	//console.log("getParentIds");
 	var parentIds = [];
 	for (var i = 0; i < row_container_array.length; i++) {
 		var str = row_container_array[i];
 		var firstpart = str.split("c");
-		// console.log(firstpart[0].substr(1));
 		parentIds.push(firstpart[0].substr(1))
 	}
 	jQuery.unique(parentIds);
-	// console.log(parentIds);
 	return parentIds;
 
 }
 //search particular string in array
 function searchStringInArray(str, array) {
-	//console.log("searchStringInArray");
 	for (var j = 0; j < array.length; j++) {
 		if (array[j].match(str))
 			return j;
@@ -60,11 +55,7 @@ function searchStringInArray(str, array) {
 }
 
 $(document).ready(function() {
-	//console.log("ready");
-	
-	
 
-	//console.log("Fetch username");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/getloggedinuser";
 	$.ajax({
@@ -75,76 +66,70 @@ $(document).ready(function() {
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
 				message = data.message;
-				//console.log(message);
 				loggedInUserId = data.downloadURL;
-				//console.log("loggedInUserId : "+loggedInUserId);
 				$('#userNameLabel').text(loggedInUserId);
-				if(loggedInUserId != "admin"){
-					$('#usersList').css("display","none");
-					$('#rolesList').css("display","none");
-				}
-				
+
+				$.ajax({
+                		type : 'GET',
+                		url : "rest/service/queryrole/"+ loggedInUserId,
+                		dataType : "json",
+                		success : function(data2) {
+                			errorCode = data2.errorCode;
+                			if (data2.roleInfo && data2.roleInfo.roleMeta[0]) {
+                				if(data2.roleInfo.roleMeta[0].roleName != "ROLE_ADMIN"){
+                                    $('#usersList').css("display","none");
+                                    $('#rolesList').css("display","none");
+                                }
+                			}
+                		},
+                		error : function(data) {
+                		}
+                	});
 			} else {
 				console.log("errorcode part");
-
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			//console.log("message: "+message);
-
 		}
 	});
 	$('#centerContent').html('');
-	$('input:radio[id="createNewData"]').prop('checked', true);	
-	
+	$('input:radio[id="createNewData"]').prop('checked', true);
+
 	showCreateDataSet();
-	//$("#defineData a").addClass("activeMainMenuClass");
-	//$('#defineData').css('background-color','#22497D');
+
 	$("input[name=radioSelection]:radio").click(function () {
         if ($('input[name=radioSelection]:checked').val() == "createNewData") {
-        	//alert("createNewData");
 			showCreateDataSet();
         }else if ($('input[name=radioSelection]:checked').val() == "loadFromRecent") {
-        	//alert("loadFromRecent");
 			showLoadFromRecent();
         }
 	});
 	$("#mainMenu li").click(function() {
 		var mainMenuId = $(this).attr('id');
-		//alert("mainMenu click function");
-		/*alert("mainMenuId : " + mainMenuId);*/
 		if (mainMenuId == "defineData") {
 			$('#dataSetRadioBtns').show();
 			$('#centerContent').html('');
 			$('input:radio[id="createNewData"]').prop('checked', true);
+
 			showCreateDataSet();
 		} else if (mainMenuId == "setting") {
-			/* alert("setting if condition"); */
 			$('#dataSetRadioBtns').hide();
 			$('#centerContent').load('settings.html',function(){
-				//fetchRole();
-				//$(".settingsPage").addClass("disabledElements");
 				$(".settingsPage :input").prop("disabled", true);				
 				roleSettings();
 			});
 		} else if (mainMenuId == "myAcct") {
-			/* alert("my account if condition"); */
 			$('#dataSetRadioBtns').hide();
 			$('#centerContent').load('myAccount.html',function(){
-				/*e.preventDefault();*/
-				//$("#accountPage").addClass("disabledElements");
-				/*$('[data-toggle="tooltipMessage"]').tooltip();*/
 				fetchUser();
 			});
 		} else if (mainMenuId == "usersList") {
 			$('#dataSetRadioBtns').hide();
-			/* $('#centerContent').load('usersList.html'); */
+			$("#centerContent").on("click").unbind();
 			$('#centerContent').load('usersList.html',function () {
-				//console.log("userList loaded");
 				$('#usersDialog').css("display","none");
 				loadUsersList();
 				$("#centerContent").on('click', '#editUserBtn', function(e){
@@ -156,11 +141,7 @@ $(document).ready(function() {
 						tdValues[count]=textval;
 						count++;
 						if(count>4) {return false;}
-					});				    
-					/*alert("tdValues[1]:" +tdValues[1]);
-					alert("tdValues[2]:" +tdValues[2]);
-					alert("tdValues[3]:" +tdValues[3]);
-					alert("tdValues[4]:" +tdValues[4]);*/
+					});
 					$('#usersDialog').css('overflow','hidden'); //to hide the scroll bar
 					$('#usersDialog').dialog({
 						title:"User Details",
@@ -168,7 +149,6 @@ $(document).ready(function() {
 						width: dWidth,
 						height: dHeight,
 						draggable: false,
-						//resizable: false,
 						buttons:{
 							'Update':function(){
 								/*AJAX call to call create user service*/								
@@ -188,8 +168,8 @@ $(document).ready(function() {
 					});
 
 				});
+
 				$("#centerContent").on('click', '#delUserBtn', function(){
-					//alert("delete");
 					var countDel =1;
 					var tdUserValue = [];
 					var tempUser;
@@ -199,7 +179,6 @@ $(document).ready(function() {
 					$(this).closest('tr').find('td').each(function() {
 						var textval = $(this).text(); // this will be the text of each <td>
 						tdUserValue[countDel]=textval;
-						//alert("textval"+textval);
 						tempUser=tdUserValue[1];
 						countDel++;
 						if(countDel>1) {return false;}
@@ -216,14 +195,11 @@ $(document).ready(function() {
 						width: dWidth,
 						height: dHeight,
 						draggable: false,
-						//resizable: false,
 						buttons:{
 							'Create':function(){
 								/*AJAX call to call create user service*/
-
 								createUser();
 								$('#usersDialog').dialog('close');
-								//loadUsersList();
 							},
 							'Cancel':function(){
 								$('#usersDialog').dialog('close');
@@ -235,13 +211,13 @@ $(document).ready(function() {
 						}
 					});
 					$('#usersDialog').find('.ui-button').addClass('dialogButton');
-
 					return false;
 				});
 			});
 
 		}else if(mainMenuId == "rolesList"){
 			$('#dataSetRadioBtns').hide();
+			$("#centerContent").on("click").unbind();
 			$('#centerContent').load('rolesList.html',function(){
 				$('#rolesDialog').css("display","none");
 			});
@@ -249,11 +225,8 @@ $(document).ready(function() {
 			loadRolesList();
 			$("#centerContent").on('click', '#createRoleBtn', function(e){
 				e.preventDefault();
-
-				//$('#rolesDialog').css('overflow','hidden'); //to hide the scroll bar
 				//ajax call to fetch list of users 
 				createRoleMain();
-
 				return false;
 			});
 			$("#centerContent").on('click', '#editRoleBtn', function(e){
@@ -261,7 +234,6 @@ $(document).ready(function() {
 				editRoleMain.bind($(this))();
 			});
 			$("#centerContent").on('click', '#delRoleBtn', function(){
-				//alert("delete");
 				var countDelR =1;
 				var tdRoleValue = [];
 				var tempRole;
@@ -271,7 +243,6 @@ $(document).ready(function() {
 				$(this).closest('tr').find('td').each(function() {
 					var textval = $(this).text(); // this will be the text of each <td>
 					tdRoleValue[countDelR]=textval;
-					//alert("textval"+textval);
 					tempRole=tdRoleValue[1];
 					countDelR++;
 					if(countDelR>1) {return false;}
@@ -301,42 +272,31 @@ $(document).ready(function() {
 			return false;
 		}
 	});
-	// default call getDataType
-	//console.log("get datatype num rows ");
-	/* getDataType(0, 0); */
 });
 
 function showCreateDataSet(){
-	/*alert("create data checked");*/
 	$('#centerContent').load('createDataset.html',function(){
 		//Initialize array
 			row_container_array = [ "p0c0" ];
-		// default call getDataType
-		//console.log("get datatype diff place ");
-		 getDataType(0, 0); 
+		 getDataType(0, 0);
+        //$("#centerContent #generateBtnId").on("click").unbind();
 		$("#centerContent").on('click', '#generateBtnId', function(e){
 			e.preventDefault();
-			//alert("111111111111111");
-
 			generateDataSet();
-			/*jQuery("#loading").modal('hide');
-				$("#wait").css("display", "none");*/
-			// $('#pageContainer').unmask();
-			/*$("#errorID").html(
-						"<b>" + "Error in Data Generation : " + "</b>"
-						+ message);
-				jQuery("#error").modal('show');*/
 		});
+
+        //$("#downloadJSON").on("click").unbind();
 		$('#downloadJSON').on('click',function(e) {
 			downloadDataSet();
 		});
-				
+
+        //$("#saveDataSet").on("click").unbind();
 		$('#saveDataSet').on('click',function(e) {
-			//console.log("saveDataSet");
 			saveDataSet();
-		});	
+		});
+
+        //$("#filetransfer").on("click").unbind();
 		$('#filetransfer').on('click',function(e) {
-			//console.log("file transfer");
 			transferDataSet();
 			return false;
 
@@ -349,13 +309,7 @@ function loadUsersList(){
 	$('#userListTable tbody').empty();
 	var userActionsHTML='<div><button type="button" id="editUserBtn"><i class="glyphicon glyphicon-edit"></i></button>';
 	userActionsHTML +='<button type="button" id="delUserBtn"><i class="glyphicon glyphicon-trash"></i></button></div>';
-	//hardcoded for testing
-	//var JSONData='[{"userName":"John1","userDesc":"John Desc1","createdTime":"01-JAN-2016"},{"userName":"Peter","userDesc":"Peter Desc1","createdTime":"01-FEB-2016"},{"userName":"Mark","userDesc":"Mark Desc","createdTime":"01-MAR-2016"}]';
 	var trHTML = '';
-	/*	var obj = jQuery.parseJSON(JSONData);
-	$.each(obj, function (i, item) {
-		trHTML += '<tr><td>' + item.userName + '</td><td>' + item.userDesc + '</td><td>' + item.createdTime + '</td><td>'+userActionsHTML+'</td></tr>';
-	});	*/		        
 	$('#userListTable').append(trHTML);
 	getConfigDetails();	
 	var serviceUrl = "rest/service/queryusers";
@@ -371,15 +325,11 @@ function loadUsersList(){
 			if(data == null) {
 				return;
 			}
-			//console.log(data);
 			errorCode = data.errorCode;
-			//console.log("errorCode : "+errorCode);
 			if (errorCode == null || errorCode == '') {
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				//console.log(data.userInfo);				
-				$.each(data.userInfo.userMeta, function (i, item) {				
-					//console.log("user: "+ item.userName + ",Desc:" + item.userDesc + ",password:" + item.password);
+				$.each(data.userInfo.userMeta, function (i, item) {
 					trHTML += '<tr><td>' + item.userName + '</td><td>' + item.userDesc + '</td><td>' + item.createdTime+ '</td><td>' + item.createdBy + '</td><td>'+userActionsHTML+'</td></tr>';
 				});
 				$('#userListTable').append(trHTML);
@@ -413,10 +363,7 @@ function fetchUser(){
 				if(data == null) {
 					return;
 				}
-				//console.log(data);
-				//console.log(data.userInfo);				
-				$.each(data.userInfo.userMeta, function (i, item) {				
-					//console.log("user: "+ item.userName + ",Desc:" + item.userDesc + ",password:" + item.password);
+				$.each(data.userInfo.userMeta, function (i, item) {
 					$("#inputUserName").val(item.userName);
 					$("#inputUserDesc").val(item.userDesc);
 					$("#inputPassword").val('');
@@ -426,17 +373,6 @@ function fetchUser(){
 				errorCode = data.errorCode;
 				$("#centerContent").on('click', '#saveAccntBtn', function(e){
 					e.preventDefault();
-					//alert("update my account");
-					//mandatory check
-					/*if ( !($('.accountPage #inputUserDesc').val())) {
-						console.log("Inside desc null");
-						$('.accountPage #inputUserDesc').tooltip('hide').attr('data-original-title',
-								"Please enter this field.").tooltip('fixTitle').tooltip('show');
-						$('.accountPage #inputUserDesc').tooltip();
-						//$('.accountPage #inputUserDesc').attr('data-original-title',"Please enter this field.").tooltip('fixTitle').tooltip('show');
-						$('.accountPage #inputUserDesc').tooltip({'trigger':'focus', 'title': 'Password tooltip'});
-					}*/
-					//myAccountPageValidation();
 					updateMyAccount();
 					return false;
 				});
@@ -461,42 +397,8 @@ function fetchUser(){
 	});
 	return false;
 }
-/*function myAccountPageValidation(){
-	$('#myAccountForm').formValidation({
-        framework: 'bootstrap',
-        icon: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        err: {
-            // You can set it to popover
-            // The message then will be shown in Bootstrap popover
-            container: 'tooltip'
-        },
-        fields: {
-        	inputUserDesc: {
-                row: '.col-xs-4',
-                validators: {
-                    notEmpty: {
-                        message: 'User Description is required'
-                    }
-                }
-            },
-            inputPassword: {
-                row: '.col-xs-4',
-                validators: {
-                    notEmpty: {
-                        message: 'The password is required'
-                    }
-                }
-            }
-        }
-    });
-}*/
 function createUser(){
 	//code to call create user service
-	//console.log("createUser function");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/createuser";
 	$.ajax({
@@ -514,7 +416,6 @@ function createUser(){
 			message = data.message;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");
 				loadUsersList();
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
@@ -523,13 +424,8 @@ function createUser(){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				/*$("#errorID").html(
-						"<b>" + "Error in User Creation : "
-						+ "</b>" + message);*/
-				//need to chk
 				$("#errorID").html(
 						"<b>" + "Error in User Creation : "
 						+ message+"</b>");
@@ -537,11 +433,9 @@ function createUser(){
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			//console.log("message: "+message);
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 			$("#errorID").html(
@@ -559,13 +453,11 @@ function myAccountDataToJSON(){
 	var userPwdValue = $(".accountPage #inputPassword").val();
 	var userCreDateValue = $(".accountPage #inputCreDate").val();
 	var userCreByValue = $(".accountPage #inputCreBy").val();
-	//console.log("userName"+userNameValue+",userDesc"+userDescValue+",createdBy"+userCreByValue+",createdTime"+userCreDateValue+",updatedBy"+""+",updatedTime"+""+",password"+userPwdValue);
 	return JSON.stringify({"userInfo":{"userMeta":[{"userName":userNameValue,"userDesc":userDescValue,"createdBy":userCreByValue,"createdTime":userCreDateValue,"updatedBy":"","updatedTime":"","password":userPwdValue}]}});
 
 }
 function updateMyAccount(){
 	//code to update my account
-	//console.log("updateUser function");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/updateuser";
 	$.ajax({
@@ -584,7 +476,6 @@ function updateMyAccount(){
 			errorCode = data.errorCode;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");	
 				fetchUser();
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
@@ -593,10 +484,8 @@ function updateMyAccount(){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				// $('#pageContainer').unmask();
 				$("#errorID").html(
 						"<b>" + "Error in User Updation : "
 						+ "</b>" + message);
@@ -605,14 +494,12 @@ function updateMyAccount(){
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
 			console.log("message: "+message);
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-			// $('#pageContainer').unmask();
 			$("#errorID").html(
 					"<b>" + "Error in User Updation : "
 					+ "</b>" + message);
@@ -626,20 +513,16 @@ function updateMyAccount(){
 }
 
 function userFormToJSON() {
-	/*return JSON.stringify({"userName":"user5","userDesc":"user5desc","createdBy":"admin","createdTime":"2016-06-07 19:29:11","updatedBy":"admin","updatedTime":"2016-06-08 19:29:11","password":"password"});*/
 	var userNameValue = $("#usersDialog #inputUserName").val();
 	var userDescValue = $("#usersDialog #inputUserDesc").val();
 	var userPwdValue = $("#usersDialog #inputPassword").val();
 	var userCreDateValue = $("#usersDialog #inputCreDate").val();
 	var userCreByValue = $("#usersDialog #inputCreBy").val();
-	//console.log("userName"+userNameValue+",userDesc"+userDescValue+",createdBy"+userCreByValue+",createdTime"+userCreDateValue+",updatedBy"+""+",updatedTime"+""+",password"+userPwdValue);
-	//return JSON.stringify({"userInfo":{"userMeta":[{"userName":userNameValue,"userDesc":userDescValue,"createdBy":"admin","createdTime":"2016-06-07 19:29:11","updatedBy":"admin","updatedTime":"2016-06-08 19:29:11","password":userPwdValue}]}});
 	return JSON.stringify({"userInfo":{"userMeta":[{"userName":userNameValue,"userDesc":userDescValue,"createdBy":userCreByValue,"createdTime":userCreDateValue,"updatedBy":"","updatedTime":"","password":userPwdValue}]}});
 }
 
 function updateUser(){
 	//code to call update user service
-	//console.log("updateUser function");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/updateuser";
 	$.ajax({
@@ -657,7 +540,6 @@ function updateUser(){
 			message = data.message;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");
 				loadUsersList();	
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
@@ -666,10 +548,8 @@ function updateUser(){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				// $('#pageContainer').unmask();
 				$("#errorID").html(
 						"<b>" + "Error in User Updation : "
 						+ "</b>" + message);
@@ -678,14 +558,11 @@ function updateUser(){
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			//console.log("message: "+message);
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-			// $('#pageContainer').unmask();
 			$("#errorID").html(
 					"<b>" + "Error in User Updation : "
 					+ "</b>" + message);
@@ -694,16 +571,10 @@ function updateUser(){
 	});
 
 	return false;
-
-
 }
 function deleteUser(tempUser){
 	//code to call delete user service
-	//console.log("deleteUser function");
-	//console.log("tempUser"+tempUser);
 	var userInpToDel= JSON.stringify({"userInfo":{"userMeta":[{"userName":tempUser}]}});
-	//var userToDel= JSON.stringify({"userInfo":{"userMeta":[{"userName":"user8"}]}});
-	//console.log("userInpToDel"+userInpToDel);    
 	getConfigDetails();	
 	var serviceUrl = "rest/service/deleteuser";
 	$.ajax({
@@ -721,7 +592,6 @@ function deleteUser(tempUser){
 			message = data.message;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");
 				loadUsersList();
 				$(this).closest('tr').remove();
 				jQuery("#loading").modal('hide');
@@ -731,10 +601,8 @@ function deleteUser(tempUser){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				// $('#pageContainer').unmask();
 				$("#errorID").html(
 						"<b>" + "Error in User Deletion : "
 						+ "</b>" + message);
@@ -742,14 +610,11 @@ function deleteUser(tempUser){
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			//console.log("message: "+message);	
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-			// $('#pageContainer').unmask();
 			$("#errorID").html(
 					"<b>" + "Error in User Deletion : "
 					+ "</b>" + message);
@@ -774,41 +639,32 @@ function roleSettings(){
 			if(data == null) {
 				return;
 			}
-			//console.log(data);
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("Success");
-				//console.log(data.userInfo);
-				//$('#groupUsers').empty();
 				$('#groupUsers').find('option').remove();
 				userList='[';
-				$.each(data.userInfo.userMeta, function (i, item) {				
-					//console.log("user: "+ item.userName);
+				$.each(data.userInfo.userMeta, function (i, item) {
 					userList += '{"userName":"'+item.userName+'"},';
 
 				});
 				userList = userList.slice(0, -1);
 				userList+=']';
-				//console.log("userList : "+ userList);
 				var multiDropDownHTMLfetch = '';
 				var obj = jQuery.parseJSON(userList);
 				$.each(obj, function (i, item) {
 					multiDropDownHTMLfetch += '<option>' + item.userName + '</option>';	
-				});	
-				//console.log("multiDropDownHTMLfetch: "+multiDropDownHTMLfetch);
+				});
 				$('#groupUsers').append(multiDropDownHTMLfetch);
 				fetchRole();
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 				return;
 			} else {
-				//console.log("ErrorCode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 			}
 		},
 		error : function(data) {
-			//console.log("Error");
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 		}
@@ -829,25 +685,17 @@ function fetchRole(){
 			if(data == null) {
 				return;
 			}
-			//console.log(data);
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log(data.roleInfo);
 				var roleGroupUsersFetchArray;
-				$.each(data.roleInfo.roleMeta, function (i, item) {				
-					//console.log("user: "+ item.userName + ",roleName:" + item.roleName + ",roleDesc:" + item.roleDesc);
-					//console.log("roleType: "+ item.roleType + ",groupUsers:" + item.groupUsers + ",usageType:" + item.usageType);
-					//console.log("startDate: "+ item.startDate + ",endDate:" + item.endDate + ",usageLimit:" + item.usageLimit);
-					//console.log("daysLimit: "+ item.daysLimit);
+				$.each(data.roleInfo.roleMeta, function (i, item) {
 					$("#userName").val(item.userName);
 					$("#roleName").val(item.roleName);
 					$("#roleDesc").val(item.roleDesc);
 					$("#roleType").val(item.roleType);
-					//console.log("item.groupUsers : "+item.groupUsers);
 					if(item.groupUsers){
 						roleGroupUsersFetchArray=item.groupUsers.split(",");
 					}
-					//console.log("roleGroupUsersFetchArray : "+ roleGroupUsersFetchArray);
 					$("#groupUsers").val(roleGroupUsersFetchArray);
 					$("#usageType").val(item.usageType);
 					$("#startDate").val(item.startDate);
@@ -865,10 +713,8 @@ function fetchRole(){
 			}
 		},
 		error : function(data) {
-			// console.log(data);
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-
 		}
 	});
 	return false;
@@ -877,16 +723,7 @@ function loadRolesList(){
 	$('#roleListTable tbody').empty();
 	var roleActionsHTML='<div><button type="button" id="editRoleBtn"><i class="glyphicon glyphicon-edit"></i></button>';
 	roleActionsHTML +='<button type="button" id="delRoleBtn"><i class="glyphicon glyphicon-trash"></i></button></div>';
-
-	//hardcoded for testing
-	var temp1="1111";
-	var temp2="2222";
-	//var JSONData='[{"userName":"John1","userDesc":"John Desc1","createdTime":"01-JAN-2016"},{"userName":"Peter","userDesc":"Peter Desc1","createdTime":"01-FEB-2016"},{"userName":"Mark","userDesc":"Mark Desc","createdTime":"01-MAR-2016"}]';
 	var trHTML = '';
-	/*	var obj = jQuery.parseJSON(JSONData);
-	$.each(obj, function (i, item) {
-		trHTML += '<tr><td>' + item.userName + '</td><td>' + item.userDesc + '</td><td>' + item.createdTime + '</td><td>'+userActionsHTML+'</td></tr>';
-	});	*/		        
 	$('#roleListTable').append(trHTML);
 	getConfigDetails();	
 	var serviceUrl = "rest/service/queryroles";
@@ -902,17 +739,10 @@ function loadRolesList(){
 			if(data == null) {
 				return;
 			}
-			//console.log(data);
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("Success");
-				//console.log(data.roleInfo);	
-				$.each(data.roleInfo.roleMeta, function (i, item) {				
-					//console.log("user: "+ item.userName + ",Desc:" + item.roleName + ",password:" + item.roleDesc);
-					//console.log("roleType: "+ item.roleType + ",groupUsers:" + item.groupUsers + ",usageType:" + item.usageType);
+				$.each(data.roleInfo.roleMeta, function (i, item) {
 					var roleNameText = getRoleName(item.roleName);
-					//console.log("roleNameText:"+roleNameText);
-					
 					trHTML += '<tr>'
 					trHTML += '<td data-roleType="'+item.roleType+'" data-roleNameValue="'+item.roleName+'" data-groupUsers="'+item.groupUsers+'" data-usageType="'+item.usageType+'" data-startDate="'+item.startDate+'" data-endDate="'+item.endDate+'" data-usageLimit="'+item.usageLimit+'" data-daysLimit="'+item.daysLimit+'" data-recordCountLimit="'+item.recordCountLimit+'">';
 					trHTML += item.userName + '</td>';
@@ -920,19 +750,15 @@ function loadRolesList(){
 					trHTML += '<td>'+item.roleDesc + '</td>';
 					trHTML += '<td>'+roleActionsHTML+'</td></tr>';
 				});
-				//console.log(trHTML);
 				$('#roleListTable').append(trHTML);
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 			} else {
-				//console.log("Error Code part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 			}
 		},
 		error : function(data) {
-			//console.log(data);
-			//console.log("Error");
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 		}
@@ -971,32 +797,25 @@ function createRoleMain(){
 			if(data == null) {
 				return;
 			}
-			//console.log(data);
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("Success");
-				//console.log(data.userInfo);	
 				userList='[';
-				$.each(data.userInfo.userMeta, function (i, item) {				
-					//console.log("user: "+ item.userName);
+				$.each(data.userInfo.userMeta, function (i, item) {
 					userList += '{"userName":"'+item.userName+'"},';
 
 				});
 				userList = userList.slice(0, -1);
 				userList+=']';
-				//console.log("userList : "+ userList);
 				openCreateRoleDialog();
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 				return;
 			} else {
-				//console.log("ErrorCode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 			}
 		},
 		error : function(data) {
-			//console.log("Error");
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 		}
@@ -1005,27 +824,23 @@ function createRoleMain(){
 	return false;	
 }
 function openCreateRoleDialog(){
-	//console.log("openCreateRoleDialog userList : "+ userList);
 	$('#groupUsers').find('option').remove();
 	var multiDropDownHTML = '';
 	var obj = jQuery.parseJSON(userList);
 	$.each(obj, function (i, item) {
 		multiDropDownHTML += '<option>' + item.userName + '</option>';
-	});	
-	//console.log("multiDropDownHTML: "+multiDropDownHTML);
+	});
 	$('#rolesDialog').dialog({
 		title:"Role Creation",
 		modal:true,
 		width: dWidth,
 		height: dHeight,
 		draggable: false,
-		//resizable: false,
 		buttons:{
 			'Create':function(){
 				/*AJAX call to call create role service*/							
 				createRole();
 				$('#rolesDialog').dialog('close');
-				//loadRolesList();
 			},
 			'Cancel':function(){
 				$('#rolesDialog').dialog('close');
@@ -1076,7 +891,6 @@ function clearUsageTypes(){
 	$("#rolesDialog #daysLimit").val('');
 }
 function changeUsageType(){
-	//console.log("usage type changed");
 	if($('#rolesDialog #usageType').val() == "UNLIMITED"){
 		clearUsageTypes();
 		disableUsageType();
@@ -1118,21 +932,13 @@ function editRoleMain(){
 		tdRoleValues[countR]=textval;
 		countR++;
 		if(countR>3) {return false;}
-	});		
-	/*alert( $(this).parent().parent().find('td:first').text());*/ //get the first td
-	//$('#rolesDialog').css('overflow','hidden'); //to hide the scroll bar
-	//alert( $(this).closest('tr').find('td:first').text());
+	});
 	roleTypeData = $(this).closest('tr').find('td:first').attr("data-roleType");
-	//alert("roleTypeData: "+roleTypeData);
 	roleNameDataValue = $(this).closest('tr').find('td:first').attr("data-roleNameValue");
-	//console.log("roleNameDataValue: "+roleNameDataValue);
 	roleGroupUsers = $(this).closest('tr').find('td:first').attr("data-groupUsers");
-	//alert("roleGroupUsers: "+roleGroupUsers);
 	if(roleGroupUsers){
 		roleGroupUsersArray=roleGroupUsers.split(",");
 	}
-	//console.log("roleGroupUsersArray : "+ roleGroupUsersArray);
-	
 	roleUsageType = $(this).closest('tr').find('td:first').attr("data-usageType");
 	roleStartDate = $(this).closest('tr').find('td:first').attr("data-startDate");
 	roleEndDate = $(this).closest('tr').find('td:first').attr("data-endDate");
@@ -1153,34 +959,26 @@ function editRoleMain(){
 			if(data == null) {
 				return;
 			}
-			//console.log(data);
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("Success");
-				//console.log(data.userInfo);	
 				$('#groupUsers').find('option').remove();
 				userList='[';
-				$.each(data.userInfo.userMeta, function (i, item) {				
-					//console.log("user: "+ item.userName);
+				$.each(data.userInfo.userMeta, function (i, item) {
 					userList += '{"userName":"'+item.userName+'"},';
-
 				});
 				userList = userList.slice(0, -1);
 				userList+=']';
-				//console.log("userList : "+ userList);
 				var multiDropDownHTMLedit = '';
 				var obj = jQuery.parseJSON(userList);
 				$.each(obj, function (i, item) {
 					multiDropDownHTMLedit += '<option>' + item.userName + '</option>';
-				});	
-				//console.log("multiDropDownHTMLedit: "+multiDropDownHTMLedit);
+				});
 				$('#rolesDialog').dialog({
 					title:"User Details",
 					modal:true,
 					width: dWidth,
 					height: dHeight,
 					draggable: false,
-					//resizable: false,
 					buttons:{
 						'Update':function(){
 							//AJAX call to call create user service							
@@ -1197,8 +995,6 @@ function editRoleMain(){
 						$("#roleDesc").val(tdRoleValues[3]);
 						$("#roleType").val(roleTypeData);
 						$('#groupUsers').append(multiDropDownHTMLedit);
-						//$("#groupUsers").val(roleGroupUsersArray);
-						//$("#groupUsers").multiselect("refresh");						
 						$("#usageType").val(roleUsageType);
 						$("#startDate").val(roleStartDate);
 						$("#endDate").val(roleEndDate);
@@ -1211,8 +1007,6 @@ function editRoleMain(){
 						$('#rolesDialog #endDate').datepicker({
 							dateFormat: "yy-mm-dd"
 						});
-						
-						//disableUsageType();
 						if($('#rolesDialog #roleName').val() == "ROLE_GROUP_USER"){
 							$("#rolesDialog #groupUsers").prop("disabled", false);
 							$("#groupUsers").val(roleGroupUsersArray);
@@ -1256,13 +1050,11 @@ function editRoleMain(){
 				$("#wait").css("display", "none");
 				return;
 			} else {
-				//console.log("ErrorCode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 			}
 		},
 		error : function(data) {
-			//console.log("Error");
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 		}
@@ -1275,29 +1067,21 @@ function roleFormToJSON() {
 	var roleNameValue = $("#rolesDialog #roleName").val();
 	var roleDescValue = $("#rolesDialog #roleDesc").val();
 	var roleTypeValue = $("#rolesDialog #roleType").val(); //var roleType field made hidden in Frontend
-	//var roleTypeValue = "test";
 	var groupUsersValue = $("#rolesDialog #groupUsers").val();
 	if(groupUsersValue){
 		groupUsersValue = groupUsersValue.toString();
-	}	
-	//alert("group"+ $("#rolesDialog #groupUsers").val());
-	//var groupUsersValue = "group";
+	}
 	var usageTypeValue = $("#rolesDialog #usageType").val();
 	var startDateValue = $("#rolesDialog #startDate").val();
 	var endDateValue = $("#rolesDialog #endDate").val();
 	var recordCountLimitValue = $("#rolesDialog #recordCountLimit").val();
 	var usageLimitValue = $("#rolesDialog #usageLimit").val();
 	var daysLimitValue = $("#rolesDialog #daysLimit").val();
-	//roleInfoInputData = {"roleInfo":{"roleMeta":[{"userName":"user5","roleName":"ROLE_NORMAL_USER","roleDesc":"user5 role descupd","roleType":"individual","groupUsers":"group","usageType":"unlimited","startDate":"2016-06-01","endDate":"2016-07-01","recordCountLimit":"10000","usageLimit":"1000000","daysLimit":"30"}]}};
 	roleInfoInputData = {"roleInfo":{"roleMeta":[{"userName":userNameValue,"roleName":roleNameValue,"roleDesc":roleDescValue,"roleType":roleTypeValue,"groupUsers":groupUsersValue,"usageType":usageTypeValue,"startDate":startDateValue,"endDate":endDateValue,"recordCountLimit":recordCountLimitValue,"usageLimit":usageLimitValue,"daysLimit":daysLimitValue}]}};
-	//console.log("userName"+userNameValue+",roleName"+roleNameValue+",roleDesc"+roleDescValue+",roleType"+roleTypeValue+",groupUsers"+groupUsersValue+",usageType"+usageTypeValue+",startDate"+startDateValue+",endDate"+endDateValue+",recordCountLimit"+recordCountLimitValue+",usageLimit"+usageLimitValue+",daysLimit"+daysLimitValue);
-	//return JSON.stringify(roleInfoInputData); //commented as it is not working
 	return JSON.stringify({"roleInfo":{"roleMeta":[{"userName":userNameValue,"roleName":roleNameValue,"roleDesc":roleDescValue,"roleType":roleTypeValue,"groupUsers":groupUsersValue,"usageType":usageTypeValue,"startDate":startDateValue,"endDate":endDateValue,"recordCountLimit":recordCountLimitValue,"usageLimit":usageLimitValue,"daysLimit":daysLimitValue}]}});
-
 }
 function createRole(){
 	//code to call create role service
-	//console.log("createRole function");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/createrole";
 	$.ajax({
@@ -1315,7 +1099,6 @@ function createRole(){
 			message = data.message;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");
 				loadRolesList();
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
@@ -1324,22 +1107,18 @@ function createRole(){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 				$("#errorID").html(
 						"<b>" + "Error in Role Creation : "
 						+ "</b>" + message);
 				jQuery("#error").modal('show');
-
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			//console.log("message: "+message);
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 			$("#errorID").html(
@@ -1353,7 +1132,6 @@ function createRole(){
 }
 function updateRole(){
 	//code to call update role service
-	//console.log("updateRole function");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/updaterole";
 	$.ajax({
@@ -1371,7 +1149,6 @@ function updateRole(){
 			message = data.message;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");
 				loadRolesList();	
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
@@ -1380,7 +1157,6 @@ function updateRole(){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 				$("#errorID").html(
@@ -1390,11 +1166,9 @@ function updateRole(){
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			//console.log("message: "+message);
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 			$("#errorID").html(
@@ -1405,17 +1179,10 @@ function updateRole(){
 	});
 
 	return false;
-
-
 }
 function deleteRole(tempUser){
 	//code to call delete role service
-	//console.log("deleteRole function");
-	//console.log("tempUser"+tempUser);
-	//alert("tempUser"+tempUser);
 	var userInpToDelRole= JSON.stringify({"roleInfo":{"roleMeta":[{"userName":tempUser}]}});
-	//var userToDel= JSON.stringify({"userInfo":{"userMeta":[{"userName":"user8"}]}});
-	//console.log("userInpToDelRole"+userInpToDelRole);    
 	getConfigDetails();	
 	var serviceUrl = "rest/service/deleterole";
 	$.ajax({
@@ -1423,7 +1190,6 @@ function deleteRole(tempUser){
 		contentType : 'application/json',
 		url : serviceUrl,
 		dataType : "json",
-		/* data : JSON.stringify($('form').serializeObject()), */
 		data : userInpToDelRole,
 		beforeSend : function() {
 			jQuery("#loading").modal('show');
@@ -1434,8 +1200,6 @@ function deleteRole(tempUser){
 			message = data.message;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");
-				//$(this).closest('tr').remove();
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 				$("#successID").html(
@@ -1443,7 +1207,6 @@ function deleteRole(tempUser){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 				$("#errorID").html(
@@ -1453,11 +1216,9 @@ function deleteRole(tempUser){
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			//console.log("message: "+message);	
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 			$("#errorID").html(
@@ -1470,48 +1231,44 @@ function deleteRole(tempUser){
 	return false;
 }
 function showLoadFromRecent(){
+    $("#centerContent").on("click").unbind();
 	$('#centerContent').load('loadRecent.html',function(){
 		//Clear contents of array
 		row_container_array = [];
-
 		loadRecentList();
+
 		$("#centerContent").on('click', '#editRecentBtn', function(e){
 			e.preventDefault();
-			//jQuery("#loading").modal('show');
-			//$("#wait").css("display", "block");
 			var configJSONDataString=[];
 			//logic to fetch data
-			//queryDataSet.bind($(this))();
 			var countR=1;
 			var textval;
 			var tdValues=[];
 			
 			$(this).closest('tr').find('td').each(function() {
 				textval = $(this).text(); // this will be the text of each <td>
-				//alert("textval : "+textval);
 				tdValues[countR]=textval;
 				countR++;
 				if(countR>3) {return false;}
 			});
-			//alert("Val :"+$(this).closest('tr').find('td:first').attr("data-configJSON"));
 			configJSONDataString = unescape($(this).closest('tr').find('td:first').attr("data-configJSON"));
-			//console.log("configJSONDataString :"+configJSONDataString);
-			
 			$('#dataSetContainer').load('createDataset.html',function(){
-				//$('#loadListSection').css("display","none");				
 				$('#loadRecentTopSection').css("display","none");
-				//console.log("configJSONDataString after loading :"+configJSONDataString);
 				$('input:radio[id="createNewData"]').prop('checked', true);
-				loadUpdateDataSet(configJSONDataString);			
-				//jQuery("#loading").modal('hide');
-				//$("#wait").css("display", "none");
+				loadUpdateDataSet(configJSONDataString);
+                $("#centerContent").on('click', '#generateBtnId', function(e){
+                    e.preventDefault();
+                    generateDataSet();
+                });
+
 				$('#saveDataSet').on('click',function(e) {
-					//console.log("saveUpdatedDataSet");
 					saveUpdatedDataSet();
-				});	
+				});
+
 				$('#downloadJSON').on('click',function(e) {
 					downloadDataSet();
 				});
+
 				$('#filetransfer').on('click',function(e) {
 					transferDataSet();
 				});
@@ -1520,23 +1277,29 @@ function showLoadFromRecent(){
 
 			return false;
 		});
+
 		$("#centerContent").on('click', '#delRecentBtn', function(){
-			//alert("delete");
 			var countRecDel =1;
 			var tdRecValue = [];
 			var tempFile;
+			var configIdInp = 0;
 			if (!confirm("Do you want to delete!")){
 				return false;
 			}
 			$(this).closest('tr').find('td').each(function() {
 				var textval = $(this).text(); // this will be the text of each <td>
+                if($(this).attr('data-configJSON')){
+                    var tempJSON = JSON.parse(unescape($(this).attr('data-configJSON')));
+                    if(tempJSON.configId) {
+                        configIdInp = tempJSON.configId;
+                    }
+                }
 				tdRecValue[countRecDel]=textval;
-				//alert("textval"+textval);
 				tempFile=tdRecValue[1];
 				countRecDel++;
 				if(countRecDel>1) {return false;}
 			});
-			deleteDataSet(tempFile);
+			deleteDataSet(tempFile, configIdInp);
 			return false;
 		});
 
@@ -1549,14 +1312,12 @@ function queryDataSet(){
 	
 	$(this).closest('tr').find('td').each(function() {
 		textval = $(this).text(); // this will be the text of each <td>
-		//alert("textval : "+textval);
 		tdValues[countR]=textval;
 		countR++;
 		if(countR>3) {return false;}
 	});
 	alert("Val :"+$(this).closest('tr').find('td:first').attr("data-configJSON"));
 	configJSONDataString = $(this).closest('tr').find('td:first').attr("data-configJSON");
-	//console.log("configJSONDataString :"+configJSONDataString);
 }
 
 function loadRecentList(){
@@ -1579,46 +1340,32 @@ function loadRecentList(){
 			if(data == null) {
 				return;
 			}
-			//console.log(data);
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("Success");
-				//console.log(data.dataSetConfigurations);	
-				$.each(data.dataSetConfigurations, function (i, item) {				
-					//console.log("fileName: "+ item.fileName + ",fileType:" + item.fileType + ",numberOfRows:" + item.numberOfRows + ",userName:" + item.userName + ",createdTime:" + item.createdTime);
-					//$.each(item.jobConfiguration, function (i, item1) {
+				$.each(data.dataSetConfigurations, function (i, item) {
 					configJSONString = JSON.stringify(item.jobConfiguration);
-					//console.log("config: "+ configJSONString);
 					trRecentHTML += '<tr>'
-						//trRecentHTML += '<td data-configJSON="'+configJSONString+'">';
 					trRecentHTML += '<td data-configJSON='+escape(configJSONString)+'>';
 					trRecentHTML += item.jobConfiguration.fileName + '</td>';
 					trRecentHTML += '<td>' + item.userName + '</td>';
 					trRecentHTML += '<td>'+ item.createdTime + '</td>';
-					//trRecentHTML += '<td></td><td></td>';
 					trRecentHTML += '<td>'+recentBtnHTML+'</td></tr>';
-					//});
 				});
-				//console.log(trRecentHTML);
 				$('#loadListTable').append(trRecentHTML);
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 			} else {
-				//console.log("Error Code part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
 			}
 		},
 		error : function(data) {
-			//console.log(data);
-			//console.log("Error");
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
 		}
 	});
 	
 	return false;
-	
 }
 
 function loadUpdateDataSet(configJSONDataString){
@@ -1627,18 +1374,8 @@ function loadUpdateDataSet(configJSONDataString){
 	$("#fileType").val(JSONformObj.fileType);
 	$("#numRows").val(JSONformObj.numberOfRows);
 	var dataSetVarUpd = 1;
-	//$('#addr0').remove();
-	$.each(JSONformObj.fileInfo.listOfColumns, function (i, item1) {					
-		//console.log("values >>>>"+item1.values);
-		//console.log("type >>>>"+item1.type);
-		//console.log("valueType >>>>"+item1.valueType);
-		//console.log("columnName >>>>"+item1.columnName);
-		//console.log("dataType >>>>"+item1.dataType);
-		//console.log("order >>>>"+item1.order);
-		//console.log("------------");
+	$.each(JSONformObj.fileInfo.listOfColumns, function (i, item1) {
 		//Begin - Add main multirec//
-		//console.log("dataSetVarUpd value before adding row :"+dataSetVarUpd);
-		
 		$('#addr' + dataSetVarUpd)
 		.html(
 				"<th scope='row' id='order' class='order' value='"+ item1.order +"' name='dataSetOrder'>"
@@ -1682,8 +1419,7 @@ function loadUpdateDataSet(configJSONDataString){
 		$('#tabCell').append('<tr id="addr' + (dataSetVarUpd +1) + '"></tr>');
 		$('#dataType'+ dataSetVarUpd).val(item1.dataType);
 		//End - Add main multirec//
-		//console.log("bucketedColumnHeader >>>>"+item1.bucketedColumn.bucketedColumnHeader);
-		
+
 		var updatePopupCnt=0;
 		var appendModal = '<div class="modal fade in" id="addr'
 			+ dataSetVarUpd
@@ -1745,17 +1481,9 @@ function loadUpdateDataSet(configJSONDataString){
 			+ 'Save' + '</button>' +
 			'</div>' + '</div>' + '</div>' + '</div>';
 		$('#allmodal').append(appendModal);
-		$.each(item1.bucketedColumn.columnMapper, function (i, item2) {	
-			//console.log("columnMapper type >>>>"+item2.type);
-			//console.log("columnMapper dataType >>>>"+item2.dataType);
-			//console.log("columnMapper values >>>>"+item2.values);
-			//console.log("columnMapper percentageOfrows >>>>"+item2.percentageOfrows);
-			//console.log("columnMapper valuesFromSet >>>>"+item2.valuesFromSet);
-			//console.log("columnMapper valueType >>>>"+item2.valueType);
-			//console.log("------------");
-			//console.log("updatePopupCnt :"+updatePopupCnt);
+		$.each(item1.bucketedColumn.columnMapper, function (i, item2) {
+
 			//Begin - Add modal multirec
-			
 			var modalHTML = '<tr id="popupadd_row'
 				+ dataSetVarUpd
 				+ '_advancedaddr'+updatePopupCnt+'" class="trow">'
@@ -1797,16 +1525,11 @@ function loadUpdateDataSet(configJSONDataString){
 				+ ');" class="btn btn-sm btn-success"> <i class="glyphicon glyphicon-plus"></i> </button></td>'
 				+ '</tr>';
 			$('#allmodal #advancedtabCell'+dataSetVarUpd).append(modalHTML);
-			//console.log("item2.dataType :"+item2.dataType);
-			//console.log("item2.valuesFromSet :"+item2.valuesFromSet);
 			getDataType(dataSetVarUpd, updatePopupCnt);
 			getDataTypeFromValue(dataSetVarUpd, updatePopupCnt);
 			$('#columnName_parent'+ dataSetVarUpd+ '_child'+updatePopupCnt).val(item2.valuesFromSet);
 			$('#dataType_parent'+ dataSetVarUpd+'_child'+updatePopupCnt).val(item2.dataType);
 			row_container_array.push("p" + dataSetVarUpd + "c" + updatePopupCnt);
-			//changetextboxpopup(dataSetVarUpd, updatePopupCnt);
-			//arrangeConstantSnoAdvanced();
-			
 			updatePopupCnt++;
 			
 			//End - Add modal multirec
@@ -1822,7 +1545,6 @@ function loadUpdateDataSet(configJSONDataString){
 }
 
 function downloadDataSet(){
-	//console.log("download json");
 	getConfigDetails();
 	var modifiedUrl = "rest/service/download/" + fileName
 	+ ".csv";
@@ -1840,7 +1562,6 @@ function downloadDataSet(){
 }
 
 function transferDataSet(){
-	//console.log("file transfer");
 	getConfigDetails();					
 	var serviceUrl = "rest/service/datagenfiletransfer";
 	$.ajax({
@@ -1855,9 +1576,7 @@ function transferDataSet(){
 					$('#filetransferModalNorm').modal('hide');
 					$("#wait").css("display", "block");
 				},
-				/*
-				 * complete: function(){ $('#pageContainer').unmask(); },
-				 */
+
 				success : function(data) {
 					downloadURL = data.downloadURL;
 					message = data.message;
@@ -1872,7 +1591,6 @@ function transferDataSet(){
 					} else {
 						jQuery("#loading").modal('hide');
 						$("#wait").css("display", "none");
-						// $('#pageContainer').unmask();
 						$("#errorID").html(
 								"<b>" + "Error in File Transfer : "
 								+ "</b>" + message);
@@ -1881,7 +1599,6 @@ function transferDataSet(){
 					}
 				},
 				error : function(data) {
-					//console.log(data);
 					downloadURL = data.downloadURL;
 					message = data.message;
 					errorCode = data.errorCode;
@@ -1893,7 +1610,6 @@ function transferDataSet(){
 }
 
 function saveUpdatedDataSet(){
-	//console.log("saveDataSet **** ");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/updatedataset";
 	$.ajax({
@@ -1906,9 +1622,6 @@ function saveUpdatedDataSet(){
 			jQuery("#loading").modal('show');
 			$("#wait").css("display", "block");
 		},
-		/*
-		 * complete: function(){ $('#pageContainer').unmask(); },
-		 */
 		success : function(data) {
 			downloadURL = data.downloadURL;
 			message = data.message;
@@ -1923,41 +1636,30 @@ function saveUpdatedDataSet(){
 			} else {
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				// $('#pageContainer').unmask();
 				$("#errorID").html(
 						"<b>" + "Error in Data Set Configuration Saving : " + "</b>"
 						+ message);
 				jQuery("#error").modal('show');
-
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-			// $('#pageContainer').unmask();
 			$("#errorID").html(
 					"<b>" + "Error in Data Set Configuration Saving : " + "</b>"
 					+ message);
 			jQuery("#error").modal('show');
-
-			
 		}
 	});
 
 	return false;
 }
 
-function deleteDataSet(tempFile){
-	//deletedataset
-	//console.log("deleteUser function");
-	//console.log("tempFile :"+tempFile);
-	var fileInpToDel= JSON.stringify({"fileName":tempFile});
-	//var userToDel= JSON.stringify({"userInfo":{"userMeta":[{"userName":"user8"}]}});
-	//console.log("fileInpToDel"+fileInpToDel);    
+function deleteDataSet(tempFile, configIdInp){
+	var fileInpToDel= JSON.stringify({"fileName":tempFile, "configId":configIdInp});
 	getConfigDetails();	
 	var serviceUrl = "rest/service/deletedataset";
 	$.ajax({
@@ -1975,7 +1677,6 @@ function deleteDataSet(tempFile){
 			message = data.message;
 			errorCode = data.errorCode;
 			if (errorCode == null || errorCode == '') {
-				//console.log("success");
 				loadRecentList();
 				$(this).closest('tr').remove();
 				jQuery("#loading").modal('hide');
@@ -1985,10 +1686,8 @@ function deleteDataSet(tempFile){
 						+ "</b>" + message);
 				jQuery("#success").modal('show');
 			} else {
-				//console.log("errorcode part");
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				// $('#pageContainer').unmask();
 				$("#errorID").html(
 						"<b>" + "Error in Configuration Deletion : "
 						+ "</b>" + message);
@@ -1996,14 +1695,11 @@ function deleteDataSet(tempFile){
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
-			console.log("message: "+message);	
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-			// $('#pageContainer').unmask();
 			$("#errorID").html(
 					"<b>" + "Error in Configuration Deletion : "
 					+ "</b>" + message);
@@ -2041,26 +1737,10 @@ function getConfigDetails() {
 	} else {
 		portno = configparams.defaultport;
 	}
-	// console.log(portno);
 }
 
 $.fn.serializeObject = function() {
-	/*function serializeObject(){*/
-	//console.log("serializeObject");
-	/*    var $inputs = $('#createForm :input');
 
-    // not sure if you wanted this, but I thought I'd add it.
-    // get an associative array of just the values.
-    var values = {};
-    var val = "";
-    $inputs.each(function() {
-        values[this.name] = $(this).val();
-        val = val + "values[this.name]" +" : "+$(this).val();
-    });
-    alert("generateData set")
-    alert(values);
-    alert("VAL : " +val);
-    return values;*/
 	var o = {};
 	o.fileName = $("#jobName").val();
 	o.fileType = $("#fileType").val();
@@ -2128,12 +1808,7 @@ var errorCode;
 $(function() {
 	$('form').submit(
 			function() {
-				//alert("Inside Form submit");
-				//console.log("form submit");
-				/*
-				 * jQuery("#loading").modal('show'); $("#wait").css("display",
-				 * "block");
-				 */
+
 				getConfigDetails();				
 				var serviceUrl = "rest/service/dataprocessservice";
 				$.ajax({
@@ -2146,9 +1821,7 @@ $(function() {
 						jQuery("#loading").modal('show');
 						$("#wait").css("display", "block");
 					},
-					/*
-					 * complete: function(){ $('#pageContainer').unmask(); },
-					 */
+
 					success : function(data) {
 						downloadURL = data.downloadURL;
 						message = data.message;
@@ -2163,7 +1836,6 @@ $(function() {
 						} else {
 							jQuery("#loading").modal('hide');
 							$("#wait").css("display", "none");
-							// $('#pageContainer').unmask();
 							$("#errorID").html(
 									"<b>" + "Error in Data Generation : "
 									+ "</b>" + message);
@@ -2172,7 +1844,6 @@ $(function() {
 						}
 					},
 					error : function(data) {
-						// console.log(data);
 						downloadURL = data.downloadURL;
 						message = data.message;
 						errorCode = data.errorCode;
@@ -2184,14 +1855,7 @@ $(function() {
 			});
 });
 function generateDataSet() {
-	/*
-	 * $('form').submit( function() {
-	 */
-	//console.log("form submit onclick fn11");
-	/* alert("Form.ser" + $('form').serializeObject()); */
-	/*
-	 * jQuery("#loading").modal('show'); $("#wait").css("display", "block");
-	 */
+
 	//mandatory check
 	getConfigDetails();	
 	var serviceUrl = "rest/service/dataprocessservice";
@@ -2200,15 +1864,11 @@ function generateDataSet() {
 		contentType : 'application/json',
 		url : serviceUrl,
 		dataType : "json",
-		/* data : JSON.stringify($('form').serializeObject()), */
 		data : JSON.stringify($('form').serializeObject()),
 		beforeSend : function() {
 			jQuery("#loading").modal('show');
 			$("#wait").css("display", "block");
 		},
-		/*
-		 * complete: function(){ $('#pageContainer').unmask(); },
-		 */
 		success : function(data) {
 			downloadURL = data.downloadURL;
 			message = data.message;
@@ -2223,7 +1883,6 @@ function generateDataSet() {
 			} else {
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				// $('#pageContainer').unmask();
 				$("#errorID").html(
 						"<b>" + "Error in Data Generation : " + "</b>"
 						+ message);
@@ -2232,26 +1891,18 @@ function generateDataSet() {
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-			// $('#pageContainer').unmask();
 			$("#errorID").html(
 					"<b>" + "Error in Data Generation : " + "</b>"
 					+ message);
 			jQuery("#error").modal('show');
-
-
 		}
 	});
-
-	// $('#result').text(JSON.stringify($('form').serializeObject()));
 	return false;
-	/* }); */
-
 }
 
 /* Download */
@@ -2259,7 +1910,6 @@ $(function() {
 	$('#downloadJSON').on(
 			'click',
 			function(e) {
-				//console.log("download json");
 				getConfigDetails();				
 				var modifiedUrl = "rest/service/download/" + fileName
 				+ ".csv";
@@ -2279,7 +1929,6 @@ $(function() {
 });
 
 $.fn.serializeFileTransferObject = function() {
-	//console.log("serializeObject transfer");
 	var o = {};
 	o.defaultFileTransferType = "upload";
 	o.fileName = fileName;
@@ -2296,7 +1945,6 @@ $(function() {
 	$('#filetransfer').on(
 			'click',
 			function(e) {
-				//console.log("fiel transfer");
 				getConfigDetails();				
 				var serviceUrl = "rest/service/datagenfiletransfer";
 				$.ajax({
@@ -2311,9 +1959,6 @@ $(function() {
 								$('#filetransferModalNorm').modal('hide');
 								$("#wait").css("display", "block");
 							},
-							/*
-							 * complete: function(){ $('#pageContainer').unmask(); },
-							 */
 							success : function(data) {
 								downloadURL = data.downloadURL;
 								message = data.message;
@@ -2328,7 +1973,6 @@ $(function() {
 								} else {
 									jQuery("#loading").modal('hide');
 									$("#wait").css("display", "none");
-									// $('#pageContainer').unmask();
 									$("#errorID").html(
 											"<b>" + "Error in File Transfer : "
 											+ "</b>" + message);
@@ -2337,34 +1981,26 @@ $(function() {
 								}
 							},
 							error : function(data) {
-								// console.log(data);
 								downloadURL = data.downloadURL;
 								message = data.message;
 								errorCode = data.errorCode;
 							}
 				});
-
-				// $('#result').text(JSON.stringify($('form').serializeObject()));
 				return false;
-
 			});
 
 });
 
 //add row in main page
-//var dataSetVar = 1;
 
 function addRow() {
-	//console.log("addRowfn");
 	var lastMainTrID = $('#tabCell tr:last').attr('id');
-	//console.log("lastMainTrID >"+lastMainTrID);
 	if (lastMainTrID != null) {
 		var matches = lastMainTrID.match(/\d+$/);
 		var dataSetVar = parseInt(matches[0]);
 	} else {
 		var dataSetVar = 0;
 	}
-	//console.log("dataSetVar in addRow beginning >"+dataSetVar);
 	$('#addr' + dataSetVar)
 	.html(
 			"<th scope='row' id='order' class='order' name='dataSetOrder'>"
@@ -2514,12 +2150,9 @@ function addRow() {
 
 	// Add to Row Container array
 	row_container_array.push("p" + dataSetVar + "c0");
-
-	// appendModal.attr('id', 'add'+dataSetVar+'myModalNorm');
 	dataSetVar++;
 	arrangeConstantSno();
 	arrangeConstantSnoAdvanced();
-
 }
 
 //add row in pop up
@@ -2642,19 +2275,13 @@ function updateHeader(id) {
 
 //update No Of Rows
 function updateNoOfRows(id, advId, status) {
-	// alert(id+advId);
 	var advId = parseInt(advId);
 	// check filed contains some value
-
 	var rows = $('#noOfRows_parent' + id + '_child' + advId).val() || 0;
-	// alert(rows+status);
 	var total = parseFloat($('#noOfRows' + id).val());
-	// console.log("Total1 : "+total);
 	if (status == "in" && rows > 0) {
-		// alert("enter");
 		total = total + parseFloat(rows);
 		$('#noOfRows' + id).val(total);
-		// alert(parseFloat($('#noOfRows'+id).val()));
 	} else {
 		var rows_remain = total - parseFloat(rows);
 		if (rows_remain >= 0) {
@@ -2671,11 +2298,9 @@ function updateNoOfRows(id, advId, status) {
 
 //JSON Read
 function getDataType(id, advId) {
-	//console.log(" in getDataType");
 	var key = "addr";
 	var elementid = id;
 	var datatypevalue = $("#addr" + elementid + " .dataType").val();
-	//console.log("datatypevalue :" + datatypevalue);
 	if ((datatypevalue === "americancard") || (datatypevalue === "city")
 			|| (datatypevalue === "country") || (datatypevalue === "cvv")
 			|| (datatypevalue === "DiscoveryCreditCard")
@@ -2693,31 +2318,19 @@ function getDataType(id, advId) {
 			|| (datatypevalue === "ssn") || (datatypevalue === "state")
 			|| (datatypevalue === "visacreditcardnumber")
 			|| (datatypevalue === "zipcode")) {
-		//console.log("Inside If");
 		$("#addr" + elementid + " .datavalues").val('');
 		$("#addr" + elementid + " .datavalues").prop("disabled", true);
 	} else {
-		//console.log("Else part");
 		$("#addr" + elementid + " .datavalues").prop("disabled", false);
 	}
 
 	var item = datatypevalue;
-	//console.log("item :" + item);
-	//console.log("datavalues id :" + id);
+
 	if (item != "Select") {
 		var tooltipText = MouseHoverText(item);
-		//console.log("item :" + item);
-		//console.log("tooltipText :" + tooltipText);
-		//console.log("datavalues id :" + id);
-/*		if ( item !="alphanumeric") {
-			$("#datavalues" + id).tooltip('hide').attr('data-original-title',
-					tooltipText).tooltip('fixTitle').tooltip('show');
-
-		}*/
 	}
 
 	var type = $('#dataType' + id).val();
-	//console.log("type :" + type);
 	if ((type == "alphanumeric") || (type == "americancard")
 			|| (type === "cvv") || (type === "date")
 			|| (type === "digitformat") || (type == "DiscoveryCreditCard")
@@ -2731,13 +2344,11 @@ function getDataType(id, advId) {
 			|| (type == "rcommand") || (type == "ssn") || (type == "timestamp")
 			|| (type == "uniquevalues") || (type == "userdefinedregex")
 			|| (type == "visacreditcardnumber")) {
-		//console.log("if cond datatoggle");
 		$('#addrAdvBtn' + id).attr('data-toggle', '');
 		$('#addrAdvBtn' + id).css('color', '#808080');
 		return;
 	}
 	if (type == "defaultset") {
-		//console.log("type defaultset if :" + type);
 		getDataTypeFromValue(id, advId);
 		return;
 	}
@@ -2745,7 +2356,6 @@ function getDataType(id, advId) {
 	$('#addrAdvBtn' + id).css('color', '#0A84C8');
 
 	// call ajax only one time
-	//console.log("ajax_count" + ajax_count);
 	if (ajax_count < 1) {
 		json = (function() {
 			var json = null;
@@ -2759,7 +2369,6 @@ function getDataType(id, advId) {
 				'dataType' : "json",
 				'success' : function(data) {
 					json = data;
-					// console.log(json);
 				}
 			});
 
@@ -2915,7 +2524,6 @@ var MouseHoverText = function(id) {
 
 /* logout */
 function logout() {
-	//alert("Logout");
 	getConfigDetails();				
 	var modifiedUrl = "rest/service/logout" ;						
 	$.ajax({
@@ -2924,7 +2532,6 @@ function logout() {
 		success : function(data) {
 			console.log('ok');
 			window.location = modifiedUrl;
-			//$(window).attr("location","login.html");
 			window.location.href = "login.html";
 		},
 		error : function(xhr) {
@@ -2934,7 +2541,6 @@ function logout() {
 }
 /* Save DataSet*/
 function saveDataSet() {
-	//console.log("saveDataSet **** ");
 	getConfigDetails();	
 	var serviceUrl = "rest/service/savedataset";
 	$.ajax({
@@ -2947,9 +2553,6 @@ function saveDataSet() {
 			jQuery("#loading").modal('show');
 			$("#wait").css("display", "block");
 		},
-		/*
-		 * complete: function(){ $('#pageContainer').unmask(); },
-		 */
 		success : function(data) {
 			downloadURL = data.downloadURL;
 			message = data.message;
@@ -2964,22 +2567,18 @@ function saveDataSet() {
 			} else {
 				jQuery("#loading").modal('hide');
 				$("#wait").css("display", "none");
-				// $('#pageContainer').unmask();
 				$("#errorID").html(
 						"<b>" + "Error in Data Set Configuration Saving : " + "</b>"
 						+ message);
 				jQuery("#error").modal('show');
-
 			}
 		},
 		error : function(data) {
-			//console.log(data);
 			downloadURL = data.downloadURL;
 			message = data.message;
 			errorCode = data.errorCode;
 			jQuery("#loading").modal('hide');
 			$("#wait").css("display", "none");
-			// $('#pageContainer').unmask();
 			$("#errorID").html(
 					"<b>" + "Error in Data Set Configuration Saving : " + "</b>"
 					+ message);
@@ -2988,10 +2587,7 @@ function saveDataSet() {
 			
 		}
 	});
-
-	// $('#result').text(JSON.stringify($('form').serializeObject()));
 	return false;
-	/* }); */
 }
 function changetextboxpopup(elementid, childelementid) {
 

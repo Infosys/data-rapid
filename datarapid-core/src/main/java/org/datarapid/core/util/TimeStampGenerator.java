@@ -30,16 +30,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @Description The user will have to give the input in the dd/mm/yyyy format
- * only.The user will get the oracle timestamp between the two
+ * @Description The user can give the date range in the format
+ * "StartDate-EndDate#outputSimpleDateFormat".
+ * The user will get the oracle timestamp between the two
  * given dates.
  */
 public class TimeStampGenerator implements Constants {
 
-
     private static final Logger logger = LoggerFactory.getLogger(TimeStampGenerator.class);
-
-    private static final SimpleDateFormat inputFormat = new SimpleDateFormat(STANDARD_INPUT_FORMAT);
 
     /**
      * @param inputFromUser,noOfRows
@@ -52,39 +50,28 @@ public class TimeStampGenerator implements Constants {
      */
     public List<String> generateTimestamp(String inputFromUser, int noOfRows) {
 
-        String[] dateBreaker = inputFromUser.split("-");
+        String[] separator = inputFromUser.split("#");
+        String format = separator[1].trim();
+        // date format from the user
+        SimpleDateFormat outputFormat = new SimpleDateFormat(format);
+        String date = separator[0].trim();
+        String[] dateBreaker = date.split("to");
         List<String> list = new ArrayList<String>();
-
         if (dateBreaker.length == 2) {
             try {
-                Date fromDate = inputFormat.parse(dateBreaker[0]);
-                Date toDate = inputFormat.parse(dateBreaker[1]);
-
+                Date fromDate = outputFormat.parse(dateBreaker[0]);
+                Date toDate = outputFormat.parse(dateBreaker[1]);
                 long startDate = fromDate.getTime();
                 long endDate = toDate.getTime();
-
                 long diff = endDate - startDate + 1;
-
                 for (int i = 0; i < noOfRows; i++) {
-
                     Timestamp rand = new Timestamp(startDate + (long) (Math.random() * diff));
-
                     list.add(String.valueOf(rand.getTime()));
-
                 }
-
             } catch (ParseException e) {
                 logger.error("Error in TimeStampGenerator datatype  " + e);
             }
         }
         return list;
-
     }
-
-    public static void main(String[] args) {
-        TimeStampGenerator dateGenerator = new TimeStampGenerator();
-        dateGenerator.generateTimestamp("01/01/2014-01/01/2016", 1000);
-
-    }
-
 }
