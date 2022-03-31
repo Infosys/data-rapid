@@ -169,7 +169,7 @@
     </dependencies>
 
     <properties>
-        <spring.version>4.2.3.RELEASE</spring.version>
+        <spring.version>5.3.18</spring.version>
         <jackson.version>1.7.1</jackson.version>
         <shiro.version>1.2.2</shiro.version>
         <release.version>1.0</release.version>
